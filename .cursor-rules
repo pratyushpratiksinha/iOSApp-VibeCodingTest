@@ -25,6 +25,21 @@
       "iOSApp_VibeCodingTestApp.swift"
     ],
     "Features": {
+      "Login": [
+        "LoginView.swift",
+        "LoginViewModel.swift"
+      ],
+      "MainTab": [
+        "MainTabView.swift"
+      ],
+      "Home": [
+        "HomeView.swift",
+        "HomeViewModel.swift"
+      ],
+      "Settings": [
+        "SettingsView.swift",
+        "SettingsViewModel.swift"
+      ],
       "Camera": [
         "CameraView.swift",
         "CameraViewModel.swift",
