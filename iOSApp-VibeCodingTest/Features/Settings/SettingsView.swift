@@ -8,24 +8,59 @@
 import SwiftUI
 
 struct SettingsView: View {
-    @Bindable var model: SettingsViewModel
+    @AppStorage(AppStorageKeys.username) private var username: String = ""
+    @State private var isVisible = true
+    private let viewModel: SettingsViewModel
+
+    init() {
+        let binding = Binding.appStorage(AppStorageKeys.username, default: "")
+        self.viewModel = SettingsViewModel(username: binding)
+    }
 
     var body: some View {
-        NavigationView {
-            Form {
-                Section(header: Text(Constants.profileHeader)) {
-                    Text("\(Constants.usernameLabel) \(model.displayName)")
-                }
+        NavigationStack {
+            VStack(spacing: Constants.verticalSpacing) {
+                
+                VStack(alignment: .leading, spacing: Constants.innerSpacing) {
+                    Text(Constants.profileHeader)
+                        .font(.caption)
+                        .foregroundColor(.secondary)
 
-                Section {
+                    Text("\(Constants.usernameLabel) @\(viewModel.displayName)")
+                        .font(.title3)
+                        .bold()
+                }
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .padding()
+                .background(Color(.secondarySystemBackground))
+                .cornerRadius(Constants.cornerRadius)
+                
+                Spacer()
+
+                VStack(spacing: Constants.innerSpacing) {
                     Button(role: .destructive) {
-                        model.logout()
+                        withAnimation {
+                            isVisible = false
+                        }
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) {
+                            viewModel.logout()
+                        }
                     } label: {
                         Text(Constants.logoutButtonTitle)
+                            .frame(maxWidth: .infinity)
+                            .padding()
+                            .background(Color.red.opacity(0.1))
+                            .foregroundColor(.red)
+                            .cornerRadius(Constants.cornerRadius)
                     }
                 }
             }
+            .padding(.horizontal, Constants.horizontalPadding)
+            .padding(.top, Constants.topPadding)
+            .padding(.bottom, Constants.bottomPadding)
             .navigationTitle(Constants.navigationTitle)
+            .opacity(isVisible ? 1 : 0)
+            .animation(.easeInOut(duration: 0.4), value: isVisible)
         }
     }
 
@@ -34,5 +69,12 @@ struct SettingsView: View {
         static let usernameLabel = "Username:"
         static let logoutButtonTitle = "Logout"
         static let navigationTitle = "Settings"
+
+        static let topPadding: CGFloat = 32
+        static let bottomPadding: CGFloat = 16
+        static let horizontalPadding: CGFloat = 20
+        static let verticalSpacing: CGFloat = 24
+        static let innerSpacing: CGFloat = 8
+        static let cornerRadius: CGFloat = 12
     }
 }

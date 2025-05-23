@@ -28,7 +28,7 @@ struct iOSApp_VibeCodingTestApp: App {
     var body: some Scene {
         WindowGroup {
             if username.isEmpty {
-                LoginView(model: LoginViewModel())
+                LoginView()
             } else {
                 MainTabView()
             }

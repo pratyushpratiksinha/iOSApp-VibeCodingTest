@@ -5,12 +5,14 @@
 //  Created by Pratyush Pratik Sinha on 23/05/25.
 //
 
-import Foundation
 import SwiftUI
 
-@Observable
 final class SettingsViewModel {
-    @AppStorage(AppStorageKeys.username) var username: String = ""
+    @Binding var username: String
+
+    init(username: Binding<String>) {
+        self._username = username
+    }
 
     var displayName: String {
         username
