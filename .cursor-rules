@@ -32,6 +32,7 @@
     "Use [weak self] and guard self to avoid retain cycles in closures.",
     "Pass dependencies explicitly—avoid singletons or globals.",
     "Use NavigationStack and navigationDestination for navigation.",
+    "Use List, LazyVStack, LazyHStack or LazyVGrid with identifiable data for large scrollable views.",
     "Optimize ForEach loops by using stable identifiers.",
     "Implement custom view modifiers for shared styling and behavior.",
     "Always use extensions for modifiers or shared utilities.",
@@ -47,5 +48,14 @@
     "Avoid redundant boilerplate.",
     "Never use print.",
     "Write testable and clean code."
+  ],
+  "references": [
+    "https://developer.apple.com/swift/",
+    "https://www.swift.org/",
+    "https://docs.swift.org/swift-book/documentation/the-swift-programming-language/",
+    "https://developer.apple.com/xcode/swiftui/",
+    "https://developer.apple.com/design/human-interface-guidelines",
+    "https://developer.apple.com/design/tips/",
+    "https://developer.apple.com/design/human-interface-guidelines/designing-for-ios/"
   ]
 }
