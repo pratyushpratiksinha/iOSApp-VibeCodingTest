@@ -106,6 +106,7 @@
     "If unsure or if no correct answer exists, state that directly.",
     "Generate SwiftUI views with preview providers.",
     "Always break SwiftUI views into smaller reusable views.",
+    "Define all view-specific string and layout constants inside a private enum Constants scoped within the SwiftUI view. Place Constants at the bottom of the struct to maintain clean separation and improve readability.",
     "Avoid redundant boilerplate.",
     "Never use print statements. Use proper error handling with do-catch and custom Error types to surface issues.",
     "Write testable and clean code."
