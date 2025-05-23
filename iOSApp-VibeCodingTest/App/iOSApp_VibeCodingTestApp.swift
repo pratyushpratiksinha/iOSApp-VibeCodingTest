@@ -15,6 +15,8 @@ struct iOSApp_VibeCodingTestApp: App {
 
     var sharedModelContainer: ModelContainer = {
         let schema = Schema([
+            UserSettings.self,
+            FoodItem.self
         ])
         let modelConfiguration = ModelConfiguration(schema: schema, isStoredInMemoryOnly: false)
 
