@@ -77,8 +77,9 @@
         "CalorieCard.swift"
       ],
       "Extensions": [
-        "View+Snapshot.swift",
-        "Date+Format.swift"
+        "View+Extension.swift",
+        "Date+Extension.swift",
+        "Binding+Extension.swift"
       ]
     },
     "Resources": [
