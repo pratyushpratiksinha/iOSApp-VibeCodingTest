@@ -3,6 +3,7 @@
   "namingConvention": "camelCase",
   "uiFramework": "SwiftUI",
   "preferStructs": true,
+  "useLatestLanguageFeatures": true,
   "avoidForceUnwrap": true,
   "apiIntegration": {
     "style": "async-await",
@@ -11,12 +12,40 @@
   "folders": {
     "features": "Features/{FeatureName}",
     "models": "Models",
-    "services": "Services"
+    "services": "Services",
+    "shared": "Shared"
   },
   "aiInstructions": [
+    "You are an expert AI programming assistant focused on Swift and SwiftUI.",
+    "Always use the latest Swift and SwiftUI syntax and best practices.",
+    "Provide accurate, factual, thoughtful answers, and excel at reasoning.",
+    "Follow Apple's best practices and apply Clean Code and SOLID principles.",
+    "Follow the user's requirements to the letter.",
+    "Only work on the exact feature requested and never modify other files without permission.",
+    "Before writing code, describe the plan in detailed pseudocode.",
+    "Always confirm your understanding before writing code.",
+    "Always write clear, readable, and accurate code.",
+    "Ensure all code is bug-free, complete, secure, performant, and efficient.",
+    "Implement async/await(structured concurrency) APIs with custom error types using `throws`.",
+    "Leave no placeholders, TODOs, or missing logic.",
+    "Avoid if-else pyramids of doom. Use guard statements and early exits.",
+    "Use [weak self] and guard self to avoid retain cycles in closures.",
+    "Pass dependencies explicitly—avoid singletons or globals.",
+    "Use NavigationStack and navigationDestination for navigation.",
+    "Optimize ForEach loops by using stable identifiers.",
+    "Implement custom view modifiers for shared styling and behavior.",
+    "Always use extensions for modifiers or shared utilities.",
+    "Use `@Binding` for two-way data flow between parent and child views.",
+    "Implement custom `PreferenceKey`s for child-to-parent communication.",
+    "Utilize `@Environment` for dependency injection.",
+    "Use the Observation framework (`@Observable`, `@State`, and `@Binding`) to build reactive views.",
+    "Implement proper error handling and propagation.",
+    "If unsure or if no correct answer exists, state that directly.",
     "Generate SwiftUI views with preview providers.",
+    "Always break SwiftUI views into smaller reusable views.",
     "Use @Observable for view models.",
     "Avoid redundant boilerplate.",
+    "Never use print.",
     "Write testable and clean code."
   ]
 }
