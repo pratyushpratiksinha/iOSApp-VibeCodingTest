@@ -1,0 +1,22 @@
+{
+  "architecture": "MVVM",
+  "namingConvention": "camelCase",
+  "uiFramework": "SwiftUI",
+  "preferStructs": true,
+  "avoidForceUnwrap": true,
+  "apiIntegration": {
+    "style": "async-await",
+    "errorHandling": "do-catch"
+  },
+  "folders": {
+    "features": "Features/{FeatureName}",
+    "models": "Models",
+    "services": "Services"
+  },
+  "aiInstructions": [
+    "Generate SwiftUI views with preview providers.",
+    "Use @Observable for view models.",
+    "Avoid redundant boilerplate.",
+    "Write testable and clean code."
+  ]
+}
