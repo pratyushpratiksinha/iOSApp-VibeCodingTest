@@ -10,6 +10,7 @@ import SwiftUI
 struct SettingsView: View {
     @AppStorage(AppStorageKeys.username) private var username: String = ""
     @State private var isVisible = true
+    @State private var showGoalSettings = false
     private let viewModel: SettingsViewModel
 
     init() {
@@ -35,6 +36,18 @@ struct SettingsView: View {
                 .background(Color(.secondarySystemBackground))
                 .cornerRadius(Constants.cornerRadius)
                 
+                Button(action: { showGoalSettings = true }) {
+                    Text(Constants.setGoalsButtonTitle)
+                        .frame(maxWidth: .infinity)
+                        .padding()
+                        .background(Color.accentColor.opacity(0.1))
+                        .foregroundColor(.accentColor)
+                        .cornerRadius(Constants.cornerRadius)
+                }
+                .sheet(isPresented: $showGoalSettings) {
+                    GoalSettingsView()
+                }
+
                 Spacer()
 
                 VStack(spacing: Constants.innerSpacing) {
@@ -67,6 +80,7 @@ struct SettingsView: View {
     private enum Constants {
         static let profileHeader = "Profile"
         static let usernameLabel = "Username:"
+        static let setGoalsButtonTitle = "Set Nutrition Goals"
         static let logoutButtonTitle = "Logout"
         static let navigationTitle = "Settings"
 
