@@ -9,16 +9,71 @@
     "style": "async-await",
     "errorHandling": "do-catch"
   },
-  "folders": {
+  "folderStructure": {
+    "app": "App",
     "features": "Features/{FeatureName}",
     "models": "Models",
     "services": "Services",
-    "shared": "Shared"
+    "shared": {
+      "components": "Shared/Components",
+      "extensions": "Shared/Extensions"
+    },
+    "resources": "Resources"
+  },
+  "projectLayout": {
+    "App": [
+      "iOSApp_VibeCodingTestApp.swift"
+    ],
+    "Features": {
+      "Camera": [
+        "CameraView.swift",
+        "CameraViewModel.swift",
+        "CameraService.swift"
+      ],
+      "Analysis": [
+        "AnalysisView.swift",
+        "AnalysisViewModel.swift",
+        "OpenAIVisionService.swift"
+      ],
+      "Editor": [
+        "EditView.swift",
+        "EditViewModel.swift",
+        "Ingredient.swift"
+      ],
+      "History": [
+        "CalendarView.swift",
+        "HistoryViewModel.swift",
+        "HistoryStore.swift"
+      ]
+    },
+    "Models": [
+      "FoodItem.swift",
+      "NutrientInfo.swift",
+      "VisionAPIResponse.swift"
+    ],
+    "Services": [
+      "StorageService.swift",
+      "ImageCompressor.swift",
+      "Logger.swift"
+    ],
+    "Shared": {
+      "Components": [
+        "PrimaryButton.swift",
+        "CalorieCard.swift"
+      ],
+      "Extensions": [
+        "View+Snapshot.swift",
+        "Date+Format.swift"
+      ]
+    },
+    "Resources": [
+      "Assets.xcassets/"
+    ]
   },
   "aiInstructions": [
     "You are an expert AI programming assistant focused on Swift and SwiftUI.",
     "Always use the latest Swift and SwiftUI syntax and best practices.",
-    "Provide accurate, factual, thoughtful answers, and excel at reasoning.",
+    "Provide accurate, factual, thoughtfulswiftformat . answers, and excel at reasoning.",
     "Follow Apple's best practices and apply Clean Code and SOLID principles.",
     "Follow the user's requirements to the letter.",
     "Only work on the exact feature requested and never modify other files without permission.",
