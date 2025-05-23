@@ -46,7 +46,7 @@
     "Always break SwiftUI views into smaller reusable views.",
     "Use @Observable for view models.",
     "Avoid redundant boilerplate.",
-    "Never use print.",
+    "Never use print statements. Use proper error handling with do-catch and custom Error types to surface issues.",
     "Write testable and clean code."
   ],
   "references": [
