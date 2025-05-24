@@ -9,11 +9,9 @@ import SwiftUI
 import SwiftData
 
 struct HomeView: View {
-    @Query(sort: [SortDescriptor(\FoodItem.date, order: .reverse)]) private var allFoods: [FoodItem]
+    @Query(sort: [SortDescriptor(\FoodItem.timestamp, order: .reverse)]) private var allFoods: [FoodItem]
     @Query private var userSettings: [UserSettings]
-    @State private var showCamera = false
     @State private var selectedDate: HomeViewModel.DateSelection = .today
-
     @State private var viewModel: HomeViewModel
 
     init() {
@@ -26,18 +24,33 @@ struct HomeView: View {
                 ScrollView {
                     VStack(alignment: .leading, spacing: Constants.verticalSpacing) {
                         AppBar(viewModel: viewModel, selectedDate: $selectedDate)
-                        CalorieSummaryCard(viewModel: viewModel)
-                        MacrosSummaryView(viewModel: viewModel)
-                        RecentlyUploadedView(viewModel: viewModel)
+                        CalorieSummaryCard(
+                            caloriesConsumed: $viewModel.caloriesConsumed,
+                            calorieGoal: $viewModel.calorieGoal)
+                        MacrosSummaryView(
+                            proteinConsumed: $viewModel.proteinConsumed,
+                            proteinGoal: $viewModel.proteinGoal,
+                            carbsConsumed: $viewModel.carbsConsumed,
+                            carbsGoal: $viewModel.carbsGoal,
+                            fatsConsumed: $viewModel.fatsConsumed,
+                            fatsGoal: $viewModel.fatsGoal
+                        )
+                        TodayYesterdayDataView(viewModel: viewModel, selectedDate: selectedDate)
                     }
                     .padding(.horizontal, Constants.horizontalPadding)
                     .padding(.top, Constants.topPadding)
                 }
-                FloatingActionButton(action: { showCamera = true })
+                
+                FloatingActionButton(action: { viewModel.showCamera = true })
                     .padding(Constants.fabPadding)
             }
-            .sheet(isPresented: $showCamera) {
-                //CameraView()
+            .sheet(isPresented: $viewModel.showCamera) {
+//                CameraView()
+            }
+            .sheet(item: $viewModel.editingFood) { food in
+                FoodEditView(food: food, onSave: {
+                    viewModel.updateInputs(allFoods: allFoods, userSettings: userSettings)
+                })
             }
             .onAppear {
                 viewModel.updateInputs(allFoods: allFoods, userSettings: userSettings)
@@ -73,157 +86,22 @@ struct HomeView: View {
         }
     }
 
-    // MARK: - Calorie Summary Card
-    private struct CalorieSummaryCard: View {
+    // MARK: - TodayYesterday Data
+    private struct TodayYesterdayDataView: View {
         var viewModel: HomeViewModel
-        var body: some View {
-            HStack(spacing: 16) {
-                VStack(alignment: .leading) {
-                    Text("\(viewModel.caloriesLeft)")
-                        .font(.system(size: 36, weight: .bold))
-                    Text(Constants.caloriesLeft)
-                        .font(.subheadline)
-                        .foregroundColor(.secondary)
-                }
-                Spacer()
-                CircularProgressBar(progress: viewModel.calorieGoal == 0 ? 0 : Double(viewModel.caloriesLeft) / Double(viewModel.calorieGoal), image: Constants.flameIcon, color: Color.accentColor, lineWidth: 8)
-                    .frame(width: 64, height: 64)
-            }
-            .padding()
-            .background(Color(.systemBackground))
-            .clipShape(RoundedRectangle(cornerRadius: 20, style: .continuous))
-            .shadow(color: .black.opacity(0.1), radius: 8, x: 0, y: 2)
-        }
-    }
-
-    // MARK: - Macros Summary
-    private struct MacrosSummaryView: View {
-        var viewModel: HomeViewModel
-        var body: some View {
-            HStack(spacing: 16) {
-                MacroCard(progress: viewModel.proteinGoal == 0 ? 0 : Double(viewModel.proteinLeft) / Double(viewModel.proteinGoal), title: "\(viewModel.proteinLeft)g", subtitle: Constants.proteinOver, icon: Constants.proteinIcon, color: .red)
-                MacroCard(progress: viewModel.carbsGoal == 0 ? 0 : Double(viewModel.carbsLeft) / Double(viewModel.carbsGoal), title: "\(viewModel.carbsLeft)g", subtitle: Constants.carbsLeft, icon: Constants.carbsIcon, color: .orange)
-                MacroCard(progress: viewModel.fatsGoal == 0 ? 0 : Double(viewModel.fatsLeft) / Double(viewModel.fatsGoal), title: "\(viewModel.fatsLeft)g", subtitle: Constants.fatsLeft, icon: Constants.fatsIcon, color: .blue)
-            }
-        }
-    }
-
-    private struct MacroCard: View {
-        let progress: Double
-        let title: String
-        let subtitle: String
-        let icon: String
-        let color: Color
+        let selectedDate: HomeViewModel.DateSelection
         
         var body: some View {
-            VStack(spacing: 4) {
-                CircularProgressBar(progress: progress, image: icon, color: color, lineWidth: 4)
-                    .frame(width: 32, height: 32)
-                Text(title)
-                    .font(.headline)
-                Text(subtitle)
-                    .font(.caption2)
-                    .foregroundColor(.secondary)
-            }
-            .frame(maxWidth: .infinity)
-            .padding(12)
-            .background(Color(.systemBackground))
-            .clipShape(RoundedRectangle(cornerRadius: 14, style: .continuous))
-            .shadow(color: .black.opacity(0.1), radius: 8, x: 0, y: 2)
-        }
-    }
-
-    // MARK: - Recently Uploaded
-    private struct RecentlyUploadedView: View {
-        var viewModel: HomeViewModel
-        var body: some View {
-            VStack(alignment: .leading, spacing: 8) {
-                Text(Constants.recentlyUploaded)
-                    .font(.headline)
+            LazyVStack(alignment: .leading, spacing: 8) {
+                if selectedDate == .today {
+                    Text(Constants.recentlyUploaded)
+                        .font(.headline)
+                }
                 ForEach(viewModel.foodsToday) { food in
-                    FoodCard(food: food)
+                    FoodCard(food: food, onTap: {
+                        viewModel.editingFood = food
+                    })
                 }
-            }
-        }
-    }
-
-    private struct FoodCard: View {
-        let food: FoodItem
-        var body: some View {
-            HStack(spacing: 12) {
-                Rectangle()
-                    .fill(Color.green.opacity(0.2))
-                    .frame(width: 48, height: 48)
-                    .overlay(
-                        Image(systemName: "leaf")
-                            .resizable()
-                            .scaledToFit()
-                            .padding(10)
-                            .foregroundColor(.green)
-                    )
-                VStack(alignment: .leading, spacing: 4) {
-                    Text(food.name)
-                        .font(.subheadline.bold())
-                    Text("\(food.calories) calories")
-                        .font(.caption)
-                        .foregroundColor(.secondary)
-                    HStack(spacing: 8) {
-                        Label("\(food.protein)g", systemImage: Constants.proteinIcon)
-                            .labelStyle(.iconOnly)
-                            .foregroundColor(.red)
-                        Label("\(food.carbs)g", systemImage: Constants.carbsIcon)
-                            .labelStyle(.iconOnly)
-                            .foregroundColor(.orange)
-                        Label("\(food.fats)g", systemImage: Constants.fatsIcon)
-                            .labelStyle(.iconOnly)
-                            .foregroundColor(.blue)
-                    }
-                }
-                Spacer()
-                Text(food.date, style: .time)
-                    .font(.caption2)
-                    .foregroundColor(.secondary)
-            }
-            .padding(8)
-            .background(Color(.systemBackground))
-            .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
-            .shadow(color: .black.opacity(0.02), radius: 2, x: 0, y: 1)
-        }
-    }
-
-    // MARK: - Circular Progress Bar
-    private struct CircularProgressBar: View {
-        let progress: Double
-        let image: String
-        let color: Color
-        let lineWidth: CGFloat
-        
-        var body: some View {
-            ZStack {
-                Circle()
-                    .stroke(Color.gray.opacity(0.2), lineWidth: lineWidth)
-                Circle()
-                    .trim(from: 0, to: progress)
-                    .stroke(color, style: StrokeStyle(lineWidth: lineWidth, lineCap: .round))
-                    .rotationEffect(.degrees(-90))
-                Image(systemName: image)
-                    .foregroundColor(color)
-            }
-        }
-    }
-
-    // MARK: - Floating Action Button
-    struct FloatingActionButton: View {
-        let action: () -> Void
-        var body: some View {
-            Button(action: action) {
-                Image(systemName: Constants.plusIcon)
-                    .font(.system(size: 28, weight: .bold))
-                    .foregroundColor(.white)
-                    .padding()
-                    .background(Color.accentColor)
-                    .clipShape(Circle())
-                    .shadow(radius: 4)
             }
         }
     }
@@ -231,16 +109,6 @@ struct HomeView: View {
     // MARK: - Constants
     private enum Constants {
         static let appName = "Vibe Coding Test"
-        static let bellIcon = "bell"
-        static let flameIcon = "flame"
-        static let plusIcon = "plus"
-        static let proteinIcon = "fork.knife"
-        static let carbsIcon = "leaf"
-        static let fatsIcon = "drop"
-        static let caloriesLeft = "Calories left"
-        static let proteinOver = "Protein over"
-        static let carbsLeft = "Carbs left"
-        static let fatsLeft = "Fats left"
         static let recentlyUploaded = "Recently uploaded"
         static let verticalSpacing: CGFloat = 24
         static let horizontalPadding: CGFloat = 16
