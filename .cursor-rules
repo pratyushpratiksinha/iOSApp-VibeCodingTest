@@ -38,9 +38,11 @@
       ],
       "Settings": {
         "View": [
+          "GoalSettingsView.swift",
           "SettingsView.swift"
         ],
         "ViewModel": [
+          "GoalSettingsViewModel.swift",
           "SettingsViewModel.swift"
         ]
       },
