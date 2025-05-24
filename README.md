@@ -1,5 +1,7 @@
 # 📱 Food Analysis iOS App
 
+![MIT License](https://img.shields.io/badge/license-MIT-blue.svg)
+
 ## 🧠 Overview
 A sophisticated iOS application that leverages advanced image recognition and nutritional analysis to help users make informed dietary choices. The app allows users to capture images of food items and receive detailed nutritional information, making it easier to track and maintain a healthy diet.
 
