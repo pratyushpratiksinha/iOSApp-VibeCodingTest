@@ -22,6 +22,14 @@ struct FoodEditView: View {
                 Section(header: Text(Constants.nameSection)) {
                     TextField(Constants.namePlaceholder, text: $food.name)
                         .focused($isInputFocused)
+                        .toolbar {
+                            ToolbarItemGroup(placement: .keyboard) {
+                                Spacer()
+                                Button(Constants.doneButtonTitle) {
+                                    isInputFocused = false
+                                }
+                            }
+                        }
                 }
                 
                 Section(header: Text(Constants.nutritionSection)) {
@@ -70,5 +78,6 @@ struct FoodEditView: View {
         static let fats = "Fats"
         static let saveButton = "Save"
         static let cancelButton = "Cancel"
+        static let doneButtonTitle = "Done"
     }
 }

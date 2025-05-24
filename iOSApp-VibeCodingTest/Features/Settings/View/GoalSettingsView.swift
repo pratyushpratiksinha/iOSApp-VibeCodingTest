@@ -61,6 +61,13 @@ struct GoalSettingsView: View {
                                 dismiss()
                             }
                         }
+                        
+                        ToolbarItemGroup(placement: .keyboard) {
+                            Spacer()
+                            Button(Constants.doneButtonTitle) {
+                                isInputFocused = false
+                            }
+                        }
                     }
                     .onTapGesture {
                         isInputFocused = false
@@ -90,5 +97,6 @@ struct GoalSettingsView: View {
         static let fatsGoal = "Fats (g)"
         static let saveButton = "Save"
         static let cancelButton = "Cancel"
+        static let doneButtonTitle = "Done"
     }
 }
