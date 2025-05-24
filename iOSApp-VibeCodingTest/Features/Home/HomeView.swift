@@ -45,7 +45,7 @@ struct HomeView: View {
                     .padding(Constants.fabPadding)
             }
             .sheet(isPresented: $viewModel.showCamera) {
-//                CameraView()
+                CameraView()
             }
             .sheet(item: $viewModel.editingFood) { food in
                 FoodEditView(food: food, onSave: {
