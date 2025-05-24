@@ -4,20 +4,77 @@
 ## 🔍 Project Overview
 This iOS app helps users **analyze food items through image capture** and receive **detailed nutritional insights** using AI-based image recognition. The goal is to promote healthy dietary choices with a delightful user experience.
 
-## 🗂 Project Structure
+## 🗂 Project Layout
 ```
 iOSApp-VibeCodingTest/
-├── App/                 # App configuration and entry point
-├── Features/            # Main app features
-│   ├── Home/            # Dashboard and daily summary
-│   ├── Camera/          # Camera integration and image analysis
-│   ├── Analysis/        # Trends, charts, and history
-│   ├── MainTab/         # Tab bar controller
-│   ├── Settings/        # Goal management and app preferences
-│   └── Login/           # User onboarding and authentication
-├── Models/              # SwiftData and response models
-├── Shared/              # Reusable views, styles, and utilities
-└── Resources/           # Assets and localized strings
+├── App/
+│   └── iOSApp_VibeCodingTestApp.swift         # App entry point (SwiftUI lifecycle)
+│
+├── Features/
+│   ├── Login/
+│   │   ├── LoginView.swift                     # UI for user login/onboarding
+│   │   └── LoginViewModel.swift                # Handles login state and logic
+│
+│   ├── MainTab/
+│   │   └── MainTabView.swift                   # TabView containing Home, Analysis, Settings
+│
+│   ├── Home/
+│   │   ├── HomeView.swift                      # Dashboard showing today's summary and entries
+│   │   └── HomeViewModel.swift                 # Computes daily macros and calories
+│
+│   ├── Settings/
+│   │   ├── View/
+│   │   │   ├── GoalSettingsView.swift          # Goal configuration UI
+│   │   │   └── SettingsView.swift              # Main settings screen
+│   │   └── ViewModel/
+│   │       ├── GoalSettingsViewModel.swift     # Handles saving/editing nutrition goals
+│   │       └── SettingsViewModel.swift         # Manages settings data
+│
+│   ├── Camera/
+│   │   ├── View/
+│   │   │   ├── CameraCaptureView.swift         # AVFoundation live camera preview
+│   │   │   ├── CameraProcessingView.swift      # Post-capture image editing UI
+│   │   │   └── CameraView.swift                # Manages camera lifecycle and flow
+│   │   └── ViewModel/
+│   │       ├── CameraProcessingViewModel.swift# Handles editable values after analysis
+│   │       └── CameraViewModel.swift           # Tracks camera + vision states
+│   │   └── Service/
+│   │       └── CameraService.swift             # Async service calling OpenAI Vision API
+│
+│   ├── Analysis/
+│   │   ├── Model/
+│   │   │   └── MacroEntry.swift                # Simple model for macro chart entries
+│   │   ├── View/
+│   │   │   ├── AnalysisView.swift              # Full history and trend analysis
+│   │   │   ├── DailyTrendChart.swift           # Chart of calories per day
+│   │   │   └── MacroBarChart.swift             # Visual distribution of macros
+│   │   └── ViewModel/
+│   │       └── AnalysisViewModel.swift         # Groups items and computes chart data
+│
+├── Models/
+│   ├── FoodItem.swift                          # SwiftData model for food log
+│   ├── UserSettings.swift                      # SwiftData model for user macros goal
+│   └── VisionAPIResponse.swift                 # Decodable struct for OpenAI API result
+│
+├── Shared/
+│   ├── Components/
+│   │   ├── CalorieSummaryCard.swift            # Widget showing calories progress
+│   │   ├── CircularProgressBar.swift           # Ring progress used in macro views
+│   │   ├── FloatingActionButton.swift          # FAB for launching camera
+│   │   ├── FoodCard.swift                      # Compact display of a food item
+│   │   ├── FoodEditView.swift                  # Editing UI for saved entries
+│   │   ├── MacroCard.swift                     # Individual macro card
+│   │   └── MacrosSummaryView.swift             # Groups all macro cards
+│   ├── Constants/
+│   │   └── AppStorageKeys.swift                # Keys for persistent settings storage
+│   └── Extensions/
+│       ├── Binding+Extension.swift             # Utility for optional or onChange binding
+│       ├── Date+Extension.swift                # Helpers like isToday, startOfDay, etc.
+│       ├── DateFormatter+Extension.swift       # Reusable static formatters
+│       └── UIImage+Extension.swift             # Image compression and processing
+│
+├── Resources/
+│   └── Assets/                                 # All asset catalogs (AppIcon, images, etc.)
 ```
 
 ## 🧱 Development Guidelines
