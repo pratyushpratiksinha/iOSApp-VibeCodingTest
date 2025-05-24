@@ -36,54 +36,69 @@
         "HomeView.swift",
         "HomeViewModel.swift"
       ],
-      "Settings": [
-        "SettingsView.swift",
-        "SettingsViewModel.swift"
-      ],
-      "Camera": [
-        "CameraView.swift",
-        "CameraViewModel.swift",
-        "CameraService.swift"
-      ],
-      "Analysis": [
-        "AnalysisView.swift",
-        "AnalysisViewModel.swift",
-        "OpenAIVisionService.swift"
-      ],
-      "Editor": [
-        "EditView.swift",
-        "EditViewModel.swift",
-        "Ingredient.swift"
-      ],
-      "History": [
-        "CalendarView.swift",
-        "HistoryViewModel.swift",
-        "HistoryStore.swift"
-      ]
+      "Settings": {
+        "View": [
+          "SettingsView.swift"
+        ],
+        "ViewModel": [
+          "SettingsViewModel.swift"
+        ]
+      },
+      "Camera": {
+        "View": [
+          "CameraCaptureView.swift",
+          "CameraProcessingView.swift",
+          "CameraView.swift"
+        ],
+        "ViewModel": [
+          "CameraProcessingViewModel.swift",
+          "CameraViewModel.swift"
+        ],
+        "Service": [
+          "CameraService.swift"
+        ]
+      },
+      "Analysis": {
+        "Model": [
+          "MacroEntry.swift"
+        ],
+        "View": [
+          "AnalysisView.swift",
+          "DailyTrendChart.swift",
+          "MacroBarChart.swift"
+        ],
+        "ViewModel": [
+          "AnalysisViewModel.swift"
+        ]
+      }
     },
     "Models": [
       "FoodItem.swift",
-      "NutrientInfo.swift",
+      "UserSettings.swift",
       "VisionAPIResponse.swift"
-    ],
-    "Services": [
-      "StorageService.swift",
-      "ImageCompressor.swift",
-      "Logger.swift"
     ],
     "Shared": {
       "Components": [
-        "PrimaryButton.swift",
-        "CalorieCard.swift"
+        "CalorieSummaryCard.swift",
+        "CircularProgressBar.swift",
+        "FloatingActionButton.swift",
+        "FoodCard.swift",
+        "FoodEditView.swift",
+        "MacroCard.swift",
+        "MacrosSummaryView.swift"
+      ],
+      "Constants": [
+        "AppStorageKeys.swift"
       ],
       "Extensions": [
-        "View+Extension.swift",
+        "Binding+Extension.swift",
         "Date+Extension.swift",
-        "Binding+Extension.swift"
+        "DateFormatter+Extension.swift",
+        "UIImage+Extension.swift"
       ]
     },
     "Resources": [
-      "Assets.xcassets/"
+      "Assets/"
     ]
   },
   "aiInstructions": [
