@@ -8,8 +8,9 @@
 import SwiftUI
 
 struct CameraProcessingView: View {
+    @Environment(\.dismiss) private var dismiss
     let image: UIImage
-    @State private var model: CameraProcessingViewModel
+    @State private var viewModel: CameraProcessingViewModel
     let onSave: (FoodItemResponse) -> Void
     let onCancel: () -> Void
 
@@ -19,90 +20,140 @@ struct CameraProcessingView: View {
         self.image = image
         self.onSave = onSave
         self.onCancel = onCancel
-        _model = State(initialValue: CameraProcessingViewModel(result: result))
+        _viewModel = State(initialValue: CameraProcessingViewModel(result: result))
     }
 
     var body: some View {
-        ScrollView {
-            VStack(spacing: Constants.verticalSpacing) {
+        NavigationStack {
+            ZStack(alignment: .top) {
                 Image(uiImage: image)
                     .resizable()
-                    .scaledToFit()
-                    .cornerRadius(Constants.cornerRadius)
-                    .padding(.top)
-
-                VStack(spacing: Constants.inputSectionSpacing) {
-                    TextField(Constants.foodNamePlaceholder, text: $model.foodName)
-                        .font(.title2.bold())
-                        .multilineTextAlignment(.center)
-                        .focused($isInputFocused)
-
-                    HStack(spacing: Constants.macroFieldSpacing) {
-                        macroField(title: Constants.caloriesLabel, value: $model.calories)
-                        macroField(title: Constants.proteinLabel, value: $model.protein)
-                        macroField(title: Constants.carbsLabel, value: $model.carbs)
-                        macroField(title: Constants.fatsLabel, value: $model.fats)
+                    .scaledToFill()
+                    .ignoresSafeArea()
+                    .frame(height: 248)
+                
+                VStack(spacing: Constants.verticalSpacing) {
+                    Spacer(minLength: 280)
+                    
+                    VStack(spacing: Constants.innerSpacing) {
+                        TextField(Constants.foodNamePlaceholder, text: $viewModel.foodName)
+                            .font(.title2.bold())
+                            .multilineTextAlignment(.center)
+                            .padding(12)
+                            .cornerRadius(Constants.cornerRadius)
+                            .focused($isInputFocused)
+                        
+                        LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: Constants.gridSpacing) {
+                            nutritionField(icon: "flame.fill", title: Constants.caloriesLabel, value: $viewModel.calories, color: .orange)
+                            nutritionField(icon: "leaf.fill", title: Constants.carbsLabel, value: $viewModel.carbs, color: .green)
+                            nutritionField(icon: "fork.knife", title: Constants.proteinLabel, value: $viewModel.protein, color: .red)
+                            nutritionField(icon: "drop.fill", title: Constants.fatsLabel, value: $viewModel.fats, color: .purple)
+                        }
+                        .padding(.top, 8)
+                        
+                        HStack(spacing: Constants.buttonSpacing) {
+                            Button(Constants.fixButtonTitle) {
+                                viewModel.loadDefaults()
+                            }
+                            .buttonStyle(.bordered)
+                            .controlSize(.large)
+                            .frame(maxWidth: .infinity)
+                            
+                            Button(Constants.doneButtonTitle) {
+                                onSave(viewModel.buildFoodItem())
+                            }
+                            .buttonStyle(.borderedProminent)
+                            .controlSize(.large)
+                            .frame(maxWidth: .infinity)
+                        }
+                        
+                        Button(Constants.retakeButtonTitle) {
+                            onCancel()
+                        }
+                        .font(.subheadline.weight(.medium))
+                        .foregroundColor(.primary)
+                        .padding(.vertical, 10)
+                        .frame(maxWidth: .infinity)
+                        .background(
+                            RoundedRectangle(cornerRadius: 12, style: .continuous)
+                                .fill(Color(.systemGray6))
+                        )
+                        .padding(.top, 8)
+                        .padding(.bottom, 20)
+                    }
+                    .padding()
+                    .background(
+                        RoundedRectangle(cornerRadius: Constants.cornerRadius, style: .continuous)
+                            .fill(Color(.systemBackground))
+                            .shadow(color: .black.opacity(0.05), radius: 10, x: 0, y: 4)
+                    )
+                }
+                .padding(.bottom, 0)
+                .ignoresSafeArea(edges: .bottom)
+                .toolbar {
+                    ToolbarItemGroup(placement: .keyboard) {
+                        Spacer()
+                        Button(Constants.doneButtonTitle) {
+                            isInputFocused = false
+                        }
+                    }
+                    
+                    ToolbarItem(placement: .cancellationAction) {
+                        Button(Constants.cancelButtonTitle) {
+                            dismiss()
+                        }
+                        .foregroundColor(Color.white)
                     }
                 }
-
-                HStack(spacing: Constants.buttonSpacing) {
-                    Button(Constants.fixButtonTitle) {
-                        model.loadDefaults()
-                    }
-                    .buttonStyle(.bordered)
-
-                    Button(Constants.doneButtonTitle) {
-                        onSave(model.buildFoodItem())
-                    }
-                    .buttonStyle(.borderedProminent)
+                .onTapGesture {
+                    isInputFocused = false
                 }
-
-                Button(Constants.retakeButtonTitle) {
-                    onCancel()
-                }
-                .foregroundColor(.secondary)
-                .padding(.top)
             }
-            .padding()
-        }
-        .onTapGesture {
-            isInputFocused = false
         }
     }
 
-    private func macroField(title: String, value: Binding<String>) -> some View {
-        VStack(spacing: Constants.macroFieldLabelSpacing) {
-            Text(title)
-                .font(.caption)
-                .foregroundColor(.secondary)
-            TextField(Constants.defaultMacroPlaceholder, text: value)
+    private func nutritionField(icon: String, title: String, value: Binding<String>, color: Color) -> some View {
+        VStack(spacing: 4) {
+            HStack(spacing: 4) {
+                Image(systemName: icon)
+                    .foregroundColor(color)
+                Text(title)
+                    .font(.caption)
+                    .foregroundColor(.secondary)
+            }
+
+            TextField("0", text: value)
                 .keyboardType(.numberPad)
                 .multilineTextAlignment(.center)
-                .frame(width: Constants.macroFieldWidth)
-                .textFieldStyle(.roundedBorder)
+                .padding(10)
+                .frame(maxWidth: .infinity)
+                .background(Color(.secondarySystemBackground))
+                .cornerRadius(12)
                 .focused($isInputFocused)
         }
+        .padding()
+        .background(Color(.systemBackground))
+        .cornerRadius(16)
+        .shadow(color: .black.opacity(0.1), radius: 4, x: 0, y: 2)
     }
 
     private enum Constants {
         static let cornerRadius: CGFloat = 16
         static let verticalSpacing: CGFloat = 20
-        static let inputSectionSpacing: CGFloat = 12
-        static let macroFieldSpacing: CGFloat = 16
-        static let macroFieldLabelSpacing: CGFloat = 4
-        static let macroFieldWidth: CGFloat = 60
+        static let innerSpacing: CGFloat = 12
+        static let gridSpacing: CGFloat = 16
         static let buttonSpacing: CGFloat = 16
 
         static let foodNamePlaceholder = "Food name"
-        static let defaultMacroPlaceholder = "0"
 
         static let caloriesLabel = "Calories"
         static let proteinLabel = "Protein"
         static let carbsLabel = "Carbs"
         static let fatsLabel = "Fats"
 
-        static let fixButtonTitle = "Fix Results"
-        static let doneButtonTitle = "Done"
+        static let fixButtonTitle = "Fix Results                           "
+        static let doneButtonTitle = "Done                               "
         static let retakeButtonTitle = "Retake"
+        static let cancelButtonTitle = "Cancel"
     }
 }
