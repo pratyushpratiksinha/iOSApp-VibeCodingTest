@@ -7,6 +7,7 @@
 
 import Foundation
 import SwiftData
+import UIKit
 
 @Model
 final class FoodItem {
@@ -16,7 +17,7 @@ final class FoodItem {
     var protein: Int
     var carbs: Int
     var fats: Int
-    var date: Date
+    var timestamp: Date
     var imageData: Data?
     var notes: String?
     
@@ -27,7 +28,7 @@ final class FoodItem {
         protein: Int,
         carbs: Int,
         fats: Int,
-        date: Date = Date(),
+        timestamp: Date = Date(),
         imageData: Data? = nil,
         notes: String? = nil
     ) {
@@ -37,8 +38,23 @@ final class FoodItem {
         self.protein = protein
         self.carbs = carbs
         self.fats = fats
-        self.date = date
+        self.timestamp = timestamp
         self.imageData = imageData
         self.notes = notes
+    }
+}
+
+extension FoodItem {
+    convenience init(from response: FoodItemResponse, image: UIImage? = nil, notes: String? = nil) {
+        self.init(
+            name: response.name,
+            calories: response.calories,
+            protein: Int(response.proteins),
+            carbs: Int(response.carbs),
+            fats: Int(response.fats),
+            timestamp: Date(),
+            imageData: image?.jpegData(compressionQuality: 0.6),
+            notes: notes
+        )
     }
 }
