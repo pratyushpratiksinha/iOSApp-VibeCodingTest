@@ -13,6 +13,7 @@ struct GoalSettingsView: View {
     @Environment(\.dismiss) private var dismiss
     @Query private var userSettings: [UserSettings]
     @State private var viewModel: GoalSettingsViewModel? = nil
+    @FocusState private var isInputFocused: Bool
 
     var body: some View {
         NavigationStack {
@@ -24,21 +25,25 @@ struct GoalSettingsView: View {
                         Section(header: Text(Constants.calorieSection)) {
                             TextField(Constants.calorieGoal, text: $model.calorieGoal)
                                 .keyboardType(.numberPad)
+                                .focused($isInputFocused)
                         }
 
                         Section(header: Text(Constants.proteinSection)) {
                             TextField(Constants.proteinGoal, text: $model.proteinGoal)
                                 .keyboardType(.numberPad)
+                                .focused($isInputFocused)
                         }
 
                         Section(header: Text(Constants.carbsSection)) {
                             TextField(Constants.carbsGoal, text: $model.carbsGoal)
                                 .keyboardType(.numberPad)
+                                .focused($isInputFocused)
                         }
 
                         Section(header: Text(Constants.fatsSection)) {
                             TextField(Constants.fatsGoal, text: $model.fatsGoal)
                                 .keyboardType(.numberPad)
+                                .focused($isInputFocused)
                         }
                     }
                     .navigationTitle(Constants.title)
@@ -56,6 +61,9 @@ struct GoalSettingsView: View {
                                 dismiss()
                             }
                         }
+                    }
+                    .onTapGesture {
+                        isInputFocused = false
                     }
                 } else {
                     ProgressView()
