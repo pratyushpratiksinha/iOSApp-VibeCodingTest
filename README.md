@@ -85,7 +85,6 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## 🙏 Acknowledgments
 - SwiftUI for the modern UI implementation
-- All contributors and supporters of the project
 
 ## 📬 Contact
 Have questions or feedback? Reach out to the developer:  
