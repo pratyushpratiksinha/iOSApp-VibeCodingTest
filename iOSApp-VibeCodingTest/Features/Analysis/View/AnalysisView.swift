@@ -11,7 +11,7 @@ import SwiftData
 struct AnalysisView: View {
     @Query private var foodItems: [FoodItem]
     @Query private var userSettings: [UserSettings]
-    @State private var model = AnalysisViewModel()
+    @State private var viewModel = AnalysisViewModel()
 
     var body: some View {
         NavigationStack {
@@ -19,24 +19,34 @@ struct AnalysisView: View {
                 VStack(alignment: .leading, spacing: Constants.sectionSpacing) {
                     Text(Constants.calorieTrendTitle)
                         .font(.headline)
-                    DailyTrendChart(data: model.dailyCalories(for: foodItems))
+                    DailyTrendChart(data: viewModel.dailyCalories(for: foodItems))
                         .frame(height: Constants.chartHeight)
-
+                    
                     Divider()
-
+                    
                     Text(Constants.macroDistributionTitle)
                         .font(.headline)
-                    MacroBarChart(data: model.macroDistribution(for: foodItems))
+                    MacroBarChart(data: viewModel.macroDistribution(for: foodItems))
                         .frame(height: Constants.chartHeight)
-
+                    
                     Divider()
-
+                    
                     Text(Constants.logHistoryTitle)
                         .font(.headline)
-                    ForEach(model.groupedItems(foodItems), id: \.key) { date, items in
-                        let summary = model.summary(for: items, userSettings: userSettings.first)
+                    
+                    let grouped = viewModel.groupedItems(foodItems)
+                    let visibleGroups = Array(grouped.prefix(viewModel.visibleSectionCount))
+                    ForEach(visibleGroups, id: \.key) { date, items in
+                        let summary = viewModel.summary(for: items, userSettings: userSettings.first)
                         sectionView(date: date, items: items, summary: summary)
-                    }                }
+                            .onAppear {
+                                if grouped.count > viewModel.visibleSectionCount,
+                                   date == visibleGroups.last?.key {
+                                    viewModel.visibleSectionCount += 10
+                                }
+                            }
+                    }
+                }
                 .padding()
             }
             .navigationTitle(Constants.navTitle)

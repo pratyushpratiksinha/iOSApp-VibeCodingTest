@@ -9,6 +9,8 @@ import Foundation
 
 @Observable
 final class AnalysisViewModel {
+    var visibleSectionCount = 10
+    
     func groupedItems(_ items: [FoodItem]) -> [(key: String, value: [FoodItem])] {
         let grouped = Dictionary(grouping: items) {
             DateFormatter.day.string(from: $0.timestamp)
