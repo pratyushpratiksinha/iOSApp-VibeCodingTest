@@ -3,7 +3,7 @@
 <plist version="1.0">
 <dict>
 	<key>OPENROUTER_API_KEY</key>
-	<string>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</string>
+	<string>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</string>
 	<key>API_BASE_URL</key>
 	<string>https://openrouter.ai/api/v1/chat/completions</string>
 </dict>
