@@ -5,6 +5,28 @@
 ## 🧠 Overview
 A sophisticated iOS application that leverages advanced image recognition and nutritional analysis to help users make informed dietary choices. The app allows users to capture images of food items and receive detailed nutritional information, making it easier to track and maintain a healthy diet.
 
+## 🖼️ App Screenshots
+### Login Screen
+<img src="https://github.com/user-attachments/assets/44a908aa-cc74-4db4-8f00-8b27692034a9" width="300"/>
+
+### Home Screen
+<img src="https://github.com/user-attachments/assets/5bccd25c-96f2-4fc8-87ab-4e575fc2ffed" width="300"/>
+<img src="https://github.com/user-attachments/assets/acea495b-c5dd-4e2a-bd5b-ee286b7d474d" width="300"/>
+
+### Camera Screen
+<img src="https://github.com/user-attachments/assets/cd3ef300-c6b8-4170-bb45-4c8d0eed511b" width="300"/>
+<img src="https://github.com/user-attachments/assets/39aea0bc-a997-4313-9382-47a002a2c03a" width="300"/>
+
+### Analysis Screen
+<img src="https://github.com/user-attachments/assets/16db554a-04f2-414e-92b8-35d55e13ab2f" width="300"/>
+<img src="https://github.com/user-attachments/assets/96c2bd51-de1c-4297-b4fd-06f2d525f18e" width="300"/>
+<img src="https://github.com/user-attachments/assets/81ddcb2c-3001-4b44-adde-bfdf4e26a062" width="300"/>
+<img src="https://github.com/user-attachments/assets/c6ccb7ef-dd4d-42c2-9d1b-38e188b18037" width="300"/>
+
+### Settings Screen
+<img src="https://github.com/user-attachments/assets/42f9d355-87d7-49e5-bf9d-8c6fc0711890" width="300"/>
+<img src="https://github.com/user-attachments/assets/2e5484c1-f2e3-486e-9051-5b7d341e55f4" width="300"/>
+
 ## ✨ Features
 - 📸 **Smart Food Recognition**
   - Capture food using camera
