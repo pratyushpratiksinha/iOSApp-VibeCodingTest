@@ -8,15 +8,11 @@
 import SwiftUI
 
 struct SettingsView: View {
+    @Environment(\.modelContext) private var modelContext
     @AppStorage(AppStorageKeys.username) private var username: String = ""
     @State private var isVisible = true
     @State private var showGoalSettings = false
-    private let viewModel: SettingsViewModel
-
-    init() {
-        let binding = Binding.appStorage(AppStorageKeys.username, default: "")
-        viewModel = SettingsViewModel(username: binding)
-    }
+    @State private var viewModel: SettingsViewModel? = nil
 
     var body: some View {
         NavigationStack {
@@ -26,7 +22,7 @@ struct SettingsView: View {
                         .font(.caption)
                         .foregroundColor(.secondary)
 
-                    Text("\(Constants.usernameLabel) @\(viewModel.displayName)")
+                    Text("\(Constants.usernameLabel) @\(viewModel?.displayName ?? "")")
                         .font(.title3)
                         .bold()
                 }
@@ -55,7 +51,7 @@ struct SettingsView: View {
                             isVisible = false
                         }
                         DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) {
-                            viewModel.logout()
+                            try? viewModel?.logout()
                         }
                     } label: {
                         Text(Constants.logoutButtonTitle)
@@ -73,6 +69,12 @@ struct SettingsView: View {
             .navigationTitle(Constants.navigationTitle)
             .opacity(isVisible ? 1 : 0)
             .animation(.easeInOut(duration: 0.4), value: isVisible)
+            .onAppear {
+                if viewModel == nil {
+                    let binding = Binding.appStorage(AppStorageKeys.username, default: "")
+                    viewModel = SettingsViewModel(username: binding, context: modelContext)
+                }
+            }
         }
     }
 
