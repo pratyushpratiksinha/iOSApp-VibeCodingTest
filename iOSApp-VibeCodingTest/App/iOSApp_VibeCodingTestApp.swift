@@ -5,18 +5,17 @@
 //  Created by Pratyush Pratik Sinha on 23/05/25.
 //
 
-import SwiftUI
 import SwiftData
+import SwiftUI
 
 @main
 struct iOSApp_VibeCodingTestApp: App {
-    
     @AppStorage(AppStorageKeys.username) private var username: String = ""
 
     var sharedModelContainer: ModelContainer = {
         let schema = Schema([
             UserSettings.self,
-            FoodItem.self
+            FoodItem.self,
         ])
         let modelConfiguration = ModelConfiguration(schema: schema, isStoredInMemoryOnly: false)
 
@@ -26,7 +25,7 @@ struct iOSApp_VibeCodingTestApp: App {
             fatalError("Could not create ModelContainer: \(error)")
         }
     }()
-    
+
     var body: some Scene {
         WindowGroup {
             if username.isEmpty {

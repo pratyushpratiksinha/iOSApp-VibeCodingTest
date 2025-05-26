@@ -11,7 +11,7 @@ final class SettingsViewModel {
     @Binding var username: String
 
     init(username: Binding<String>) {
-        self._username = username
+        _username = username
     }
 
     var displayName: String {

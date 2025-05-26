@@ -15,13 +15,12 @@ struct SettingsView: View {
 
     init() {
         let binding = Binding.appStorage(AppStorageKeys.username, default: "")
-        self.viewModel = SettingsViewModel(username: binding)
+        viewModel = SettingsViewModel(username: binding)
     }
 
     var body: some View {
         NavigationStack {
             VStack(spacing: Constants.verticalSpacing) {
-                
                 VStack(alignment: .leading, spacing: Constants.innerSpacing) {
                     Text(Constants.profileHeader)
                         .font(.caption)
@@ -35,7 +34,7 @@ struct SettingsView: View {
                 .padding()
                 .background(Color(.secondarySystemBackground))
                 .cornerRadius(Constants.cornerRadius)
-                
+
                 Button(action: { showGoalSettings = true }) {
                     Text(Constants.setGoalsButtonTitle)
                         .frame(maxWidth: .infinity)

@@ -5,8 +5,8 @@
 //  Created by Pratyush Pratik Sinha on 23/05/25.
 //
 
-import SwiftUI
 import SwiftData
+import SwiftUI
 
 struct AnalysisView: View {
     @Query private var foodItems: [FoodItem]
@@ -21,19 +21,19 @@ struct AnalysisView: View {
                         .font(.headline)
                     DailyTrendChart(data: viewModel.dailyCalories(for: foodItems))
                         .frame(height: Constants.chartHeight)
-                    
+
                     Divider()
-                    
+
                     Text(Constants.macroDistributionTitle)
                         .font(.headline)
                     MacroBarChart(data: viewModel.macroDistribution(for: foodItems))
                         .frame(height: Constants.chartHeight)
-                    
+
                     Divider()
-                    
+
                     Text(Constants.logHistoryTitle)
                         .font(.headline)
-                    
+
                     let grouped = viewModel.groupedItems(foodItems)
                     let visibleGroups = Array(grouped.prefix(viewModel.visibleSectionCount))
                     ForEach(visibleGroups, id: \.key) { date, items in
@@ -41,7 +41,8 @@ struct AnalysisView: View {
                         sectionView(date: date, items: items, summary: summary)
                             .onAppear {
                                 if grouped.count > viewModel.visibleSectionCount,
-                                   date == visibleGroups.last?.key {
+                                   date == visibleGroups.last?.key
+                                {
                                     viewModel.visibleSectionCount += 10
                                 }
                             }
@@ -52,7 +53,7 @@ struct AnalysisView: View {
             .navigationTitle(Constants.navTitle)
         }
     }
-    
+
     @ViewBuilder
     private func sectionView(date: String, items: [FoodItem], summary: (consumed: (calories: Int, protein: Int, carbs: Int, fats: Int), goal: (calories: Int, protein: Int, carbs: Int, fats: Int))) -> some View {
         LazyVStack(alignment: .leading, spacing: 0) {
@@ -67,7 +68,7 @@ struct AnalysisView: View {
                 calorieGoal: .constant(summary.goal.calories)
             )
             .padding(.all)
-            
+
             MacrosSummaryView(
                 proteinConsumed: .constant(summary.consumed.protein),
                 proteinGoal: .constant(summary.goal.protein),
@@ -88,7 +89,7 @@ struct AnalysisView: View {
         .shadow(color: .black.opacity(0.1), radius: 8, x: 0, y: 2)
         .padding(.bottom, 8)
     }
-    
+
     @ViewBuilder
     private func foodCardView(for item: FoodItem, isLast: Bool) -> some View {
         FoodCard(food: item, onTap: nil)

@@ -5,8 +5,8 @@
 //  Created by Pratyush Pratik Sinha on 24/05/25.
 //
 
-import SwiftUI
 @preconcurrency import AVFoundation
+import SwiftUI
 
 struct CameraCaptureView: UIViewControllerRepresentable {
     let onCapture: (UIImage) -> Void
@@ -21,7 +21,7 @@ struct CameraCaptureView: UIViewControllerRepresentable {
         return controller
     }
 
-    func updateUIViewController(_ uiViewController: CameraCaptureController, context: Context) {}
+    func updateUIViewController(_: CameraCaptureController, context _: Context) {}
 
     final class Coordinator: NSObject, AVCapturePhotoCaptureDelegate {
         let onCapture: (UIImage) -> Void
@@ -30,9 +30,10 @@ struct CameraCaptureView: UIViewControllerRepresentable {
             self.onCapture = onCapture
         }
 
-        func photoOutput(_ output: AVCapturePhotoOutput,
+        func photoOutput(_: AVCapturePhotoOutput,
                          didFinishProcessingPhoto photo: AVCapturePhoto,
-                         error: Error?) {
+                         error _: Error?)
+        {
             guard let data = photo.fileDataRepresentation(),
                   let image = UIImage(data: data) else { return }
             onCapture(image)
@@ -43,7 +44,7 @@ struct CameraCaptureView: UIViewControllerRepresentable {
 final class CameraCaptureController: UIViewController {
     private var previewLayer: AVCaptureVideoPreviewLayer!
     private var output = AVCapturePhotoOutput()
-    
+
     private var captureSession: AVCaptureSession?
 
     weak var delegate: AVCapturePhotoCaptureDelegate?
@@ -62,14 +63,15 @@ final class CameraCaptureController: UIViewController {
         guard let device = AVCaptureDevice.default(for: .video),
               let input = try? AVCaptureDeviceInput(device: device),
               session.canAddInput(input),
-              session.canAddOutput(output) else {
+              session.canAddOutput(output)
+        else {
             return
         }
 
         session.addInput(input)
         session.addOutput(output)
 
-        self.captureSession = session
+        captureSession = session
 
         previewLayer = AVCaptureVideoPreviewLayer(session: session)
         previewLayer.videoGravity = .resizeAspectFill
@@ -80,7 +82,7 @@ final class CameraCaptureController: UIViewController {
             session.startRunning()
         }
     }
-    
+
     private func addCaptureButton() {
         let button = UIButton(type: .system)
         let config = UIImage.SymbolConfiguration(pointSize: 36, weight: .bold)
@@ -100,7 +102,7 @@ final class CameraCaptureController: UIViewController {
             button.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             button.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -24),
             button.widthAnchor.constraint(equalToConstant: 70),
-            button.heightAnchor.constraint(equalToConstant: 70)
+            button.heightAnchor.constraint(equalToConstant: 70),
         ])
     }
 
@@ -108,4 +110,4 @@ final class CameraCaptureController: UIViewController {
         let settings = AVCapturePhotoSettings()
         output.capturePhoto(with: settings, delegate: delegate!)
     }
-} 
+}

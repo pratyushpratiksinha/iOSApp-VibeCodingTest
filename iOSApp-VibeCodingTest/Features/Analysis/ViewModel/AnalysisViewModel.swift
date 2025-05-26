@@ -10,7 +10,7 @@ import Foundation
 @Observable
 final class AnalysisViewModel {
     var visibleSectionCount = 10
-    
+
     func groupedItems(_ items: [FoodItem]) -> [(key: String, value: [FoodItem])] {
         let grouped = Dictionary(grouping: items) {
             DateFormatter.day.string(from: $0.timestamp)
@@ -29,20 +29,20 @@ final class AnalysisViewModel {
         }
         return total
     }
-    
+
     func summary(for items: [FoodItem], userSettings: UserSettings?) -> (consumed: (calories: Int, protein: Int, carbs: Int, fats: Int), goal: (calories: Int, protein: Int, carbs: Int, fats: Int)) {
         let consumed = (
             calories: items.reduce(0) { $0 + $1.calories },
-            protein:  items.reduce(0) { $0 + $1.protein },
-            carbs:    items.reduce(0) { $0 + $1.carbs },
-            fats:     items.reduce(0) { $0 + $1.fats }
+            protein: items.reduce(0) { $0 + $1.protein },
+            carbs: items.reduce(0) { $0 + $1.carbs },
+            fats: items.reduce(0) { $0 + $1.fats }
         )
 
         let goal = (
             calories: userSettings?.calorieGoal ?? 2000,
-            protein:  userSettings?.proteinGoal ?? 100,
-            carbs:    userSettings?.carbsGoal ?? 250,
-            fats:     userSettings?.fatsGoal ?? 70
+            protein: userSettings?.proteinGoal ?? 100,
+            carbs: userSettings?.carbsGoal ?? 250,
+            fats: userSettings?.fatsGoal ?? 70
         )
 
         return (consumed: consumed, goal: goal)

@@ -5,8 +5,8 @@
 //  Created by Pratyush Pratik Sinha on 24/05/25.
 //
 
-import SwiftUI
 import Charts
+import SwiftUI
 
 struct DailyTrendChart: View {
     let data: [Date: Int]

@@ -13,7 +13,7 @@ struct MacroCard: View {
     @Binding var subtitle: String
     let icon: String
     let color: Color
-    
+
     var body: some View {
         VStack(spacing: 4) {
             CircularProgressBar(progress: progress, image: icon, color: color, lineWidth: 4)

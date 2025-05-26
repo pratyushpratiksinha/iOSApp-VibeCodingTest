@@ -55,7 +55,7 @@ struct CameraView: View {
                     )
                 }
 
-            case .error(let message):
+            case let .error(message):
                 VStack {
                     Text("\(Constants.errorTitle) \(message)")
                         .foregroundColor(.red)
@@ -71,14 +71,14 @@ struct CameraView: View {
         capturedImage = nil
         viewModel.resetState()
     }
-    
+
     private enum Constants {
         static let analyzingText = "Analyzing..."
         static let errorTitle = "Error:"
         static let retryButton = "Retry"
     }
-    
-    private func simulateMockAnalysis(for image: UIImage) {
+
+    private func simulateMockAnalysis(for _: UIImage) {
         Task {
             try? await Task.sleep(nanoseconds: 1_000_000_000) // Simulated delay
             viewModel.analysisResult = VisionAPIResponse(
@@ -89,7 +89,7 @@ struct CameraView: View {
                         proteins: 12,
                         carbs: 55,
                         fats: 10
-                    )
+                    ),
                 ],
                 totalCalories: 420,
                 confidence: 0.95

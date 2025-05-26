@@ -5,8 +5,8 @@
 //  Created by Pratyush Pratik Sinha on 24/05/25.
 //
 
-import SwiftUI
 import Charts
+import SwiftUI
 
 struct MacroBarChart: View {
     let data: (protein: Int, carbs: Int, fats: Int)
@@ -15,7 +15,7 @@ struct MacroBarChart: View {
         let entries = [
             MacroEntry(name: Constants.proteinLabel, value: data.protein, color: Constants.proteinColor),
             MacroEntry(name: Constants.carbsLabel, value: data.carbs, color: Constants.carbsColor),
-            MacroEntry(name: Constants.fatsLabel, value: data.fats, color: Constants.fatsColor)
+            MacroEntry(name: Constants.fatsLabel, value: data.fats, color: Constants.fatsColor),
         ]
 
         Chart(entries) { entry in

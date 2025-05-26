@@ -14,11 +14,11 @@ struct MainTabView: View {
                 .tabItem {
                     Label(Constants.homeTabTitle, systemImage: Constants.homeTabIcon)
                 }
-            
+
             AnalysisView()
-                    .tabItem {
-                        Label(Constants.analysisTabTitle, systemImage: Constants.analysisTabIcon)
-                    }
+                .tabItem {
+                    Label(Constants.analysisTabTitle, systemImage: Constants.analysisTabIcon)
+                }
 
             SettingsView()
                 .tabItem {
@@ -30,7 +30,7 @@ struct MainTabView: View {
     private enum Constants {
         static let homeTabTitle = "Home"
         static let homeTabIcon = "house"
-        
+
         static let analysisTabTitle = "Analysis"
         static let analysisTabIcon = "calendar"
 

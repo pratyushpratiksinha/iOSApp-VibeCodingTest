@@ -5,8 +5,8 @@
 //  Created by Pratyush Pratik Sinha on 24/05/25.
 //
 
-import SwiftUI
 import SwiftData
+import SwiftUI
 
 @Observable
 final class GoalSettingsViewModel {
@@ -20,7 +20,7 @@ final class GoalSettingsViewModel {
 
     init(modelContext: ModelContext, initialSettings: [UserSettings]) {
         self.modelContext = modelContext
-        self.userSettings = initialSettings.first
+        userSettings = initialSettings.first
         loadGoals()
     }
 

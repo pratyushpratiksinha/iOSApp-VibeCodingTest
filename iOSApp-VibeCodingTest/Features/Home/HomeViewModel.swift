@@ -15,7 +15,7 @@ final class HomeViewModel {
     var selectedDate: DateSelection = .today {
         didSet { updateForSelectedDate() }
     }
-    
+
     var showCamera = false
     var editingFood: FoodItem?
     var foodsToday: [FoodItem] = []
@@ -31,11 +31,11 @@ final class HomeViewModel {
     var carbsLeft: Int = 0
     var fatsConsumed: Int = 0
     var fatsLeft: Int = 0
-    
+
     var caloriesOver: Int? {
         caloriesLeft < 0 ? abs(caloriesLeft) : nil
     }
-    
+
     var proteinOver: Int? {
         proteinLeft < 0 ? abs(proteinLeft) : nil
     }
@@ -47,20 +47,20 @@ final class HomeViewModel {
     var fatsOver: Int? {
         fatsLeft < 0 ? abs(fatsLeft) : nil
     }
-    
+
     init(allFoods: [FoodItem], userSettings: [UserSettings], selectedDate: DateSelection = .today) {
         self.allFoods = allFoods
         self.userSettings = userSettings
         self.selectedDate = selectedDate
         updateForSelectedDate()
     }
-    
+
     func updateInputs(allFoods: [FoodItem], userSettings: [UserSettings]) {
         self.allFoods = allFoods
         self.userSettings = userSettings
         updateForSelectedDate()
     }
-    
+
     private func updateForSelectedDate() {
         // Get user goals
         let settings = userSettings.first
@@ -68,19 +68,19 @@ final class HomeViewModel {
         proteinGoal = settings?.proteinGoal ?? 100
         carbsGoal = settings?.carbsGoal ?? 250
         fatsGoal = settings?.fatsGoal ?? 70
-        
+
         // Filter foods for selected date
         let calendar = Calendar.current
         let now = Date()
         let targetDate: Date = selectedDate == .today ? now : calendar.date(byAdding: .day, value: -1, to: now) ?? now
         foodsToday = allFoods.filter { calendar.isDate($0.timestamp, inSameDayAs: targetDate) }
-        
+
         // Calculate totals
         let totalCalories = foodsToday.reduce(0) { $0 + $1.calories }
         let totalProtein = foodsToday.reduce(0) { $0 + $1.protein }
         let totalCarbs = foodsToday.reduce(0) { $0 + $1.carbs }
         let totalFats = foodsToday.reduce(0) { $0 + $1.fats }
-        
+
         caloriesConsumed = totalCalories
         caloriesLeft = calorieGoal - totalCalories
         proteinConsumed = totalProtein
@@ -90,7 +90,7 @@ final class HomeViewModel {
         fatsConsumed = totalFats
         fatsLeft = fatsGoal - totalFats
     }
-    
+
     enum DateSelection: String, CaseIterable {
         case today = "Today"
         case yesterday = "Yesterday"

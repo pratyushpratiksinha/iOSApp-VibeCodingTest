@@ -20,7 +20,7 @@ final class FoodItem {
     var timestamp: Date
     var imageData: Data?
     var notes: String?
-    
+
     init(
         id: UUID = UUID(),
         name: String,

@@ -17,7 +17,6 @@ actor CameraService {
     }
 
     func analyzeFoodImage(_ image: UIImage) async throws -> VisionAPIResponse {
-        
         let resized = image.scaledDown(toMaxDimension: 1024)
         guard let imageData = resized.jpegData(compressionQuality: 0.6) else {
             throw CameraServiceError.invalidImage
@@ -33,18 +32,18 @@ actor CameraService {
                     "content": [
                         [
                             "type": "text",
-                            "text": "Analyze this food image and provide nutritional information. Return the response in the following JSON format: {\"foodItems\": [{\"name\": \"food name\", \"calories\": number, \"proteins\": number, \"carbs\": number, \"fats\": number}], \"totalCalories\": number, \"confidence\": number}"
+                            "text": "Analyze this food image and provide nutritional information. Return the response in the following JSON format: {\"foodItems\": [{\"name\": \"food name\", \"calories\": number, \"proteins\": number, \"carbs\": number, \"fats\": number}], \"totalCalories\": number, \"confidence\": number}",
                         ],
                         [
                             "type": "image_url",
                             "image_url": [
-                                "url": "data:image/jpeg;base64,\(base64Image)"
-                            ]
-                        ]
-                    ]
-                ]
+                                "url": "data:image/jpeg;base64,\(base64Image)",
+                            ],
+                        ],
+                    ],
+                ],
             ],
-            "max_tokens": 500
+            "max_tokens": 500,
         ]
 
         guard let url = URL(string: baseURL) else {
@@ -73,7 +72,8 @@ actor CameraService {
 
             guard let content = apiResponse.choices.first?.message.content,
                   let jsonData = content.data(using: .utf8),
-                  let visionResponse = try? decoder.decode(VisionAPIResponse.self, from: jsonData) else {
+                  let visionResponse = try? decoder.decode(VisionAPIResponse.self, from: jsonData)
+            else {
                 throw CameraServiceError.decodingError
             }
 
@@ -85,6 +85,7 @@ actor CameraService {
 }
 
 // MARK: - Error Types
+
 enum CameraServiceError: LocalizedError {
     case invalidImage
     case invalidURL
@@ -100,7 +101,7 @@ enum CameraServiceError: LocalizedError {
             return "Invalid API URL"
         case .invalidResponse:
             return "Invalid response from server"
-        case .apiError(let statusCode, let data):
+        case let .apiError(statusCode, data):
             if let errorMessage = String(data: data, encoding: .utf8) {
                 return "API Error (\(statusCode)): \(errorMessage)"
             }
@@ -112,6 +113,7 @@ enum CameraServiceError: LocalizedError {
 }
 
 // MARK: - Response Types
+
 struct OpenAIResponse: Codable {
     let choices: [Choice]
 

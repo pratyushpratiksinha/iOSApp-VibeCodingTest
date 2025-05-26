@@ -31,10 +31,10 @@ struct CameraProcessingView: View {
                     .scaledToFill()
                     .ignoresSafeArea()
                     .frame(height: 248)
-                
+
                 VStack(spacing: Constants.verticalSpacing) {
                     Spacer(minLength: 280)
-                    
+
                     VStack(spacing: Constants.innerSpacing) {
                         TextField(Constants.foodNamePlaceholder, text: $viewModel.foodName)
                             .font(.title2.bold())
@@ -42,7 +42,7 @@ struct CameraProcessingView: View {
                             .padding(12)
                             .cornerRadius(Constants.cornerRadius)
                             .focused($isInputFocused)
-                        
+
                         LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: Constants.gridSpacing) {
                             nutritionField(icon: "flame.fill", title: Constants.caloriesLabel, value: $viewModel.calories, color: .orange)
                             nutritionField(icon: "leaf.fill", title: Constants.carbsLabel, value: $viewModel.carbs, color: .green)
@@ -50,7 +50,7 @@ struct CameraProcessingView: View {
                             nutritionField(icon: "drop.fill", title: Constants.fatsLabel, value: $viewModel.fats, color: .purple)
                         }
                         .padding(.top, 8)
-                        
+
                         HStack(spacing: Constants.buttonSpacing) {
                             Button(Constants.fixButtonTitle) {
                                 viewModel.loadDefaults()
@@ -58,7 +58,7 @@ struct CameraProcessingView: View {
                             .buttonStyle(.bordered)
                             .controlSize(.large)
                             .frame(maxWidth: .infinity)
-                            
+
                             Button(Constants.doneButtonTitle) {
                                 onSave(viewModel.buildFoodItem())
                             }
@@ -66,7 +66,7 @@ struct CameraProcessingView: View {
                             .controlSize(.large)
                             .frame(maxWidth: .infinity)
                         }
-                        
+
                         Button(Constants.retakeButtonTitle) {
                             onCancel()
                         }
@@ -97,7 +97,7 @@ struct CameraProcessingView: View {
                             isInputFocused = false
                         }
                     }
-                    
+
                     ToolbarItem(placement: .cancellationAction) {
                         Button(Constants.cancelButtonTitle) {
                             dismiss()

@@ -5,8 +5,8 @@
 //  Created by Pratyush Pratik Sinha on 24/05/25.
 //
 
-import SwiftUI
 import SwiftData
+import SwiftUI
 
 struct GoalSettingsView: View {
     @Environment(\.modelContext) private var modelContext
@@ -61,7 +61,7 @@ struct GoalSettingsView: View {
                                 dismiss()
                             }
                         }
-                        
+
                         ToolbarItemGroup(placement: .keyboard) {
                             Spacer()
                             Button(Constants.doneButtonTitle) {

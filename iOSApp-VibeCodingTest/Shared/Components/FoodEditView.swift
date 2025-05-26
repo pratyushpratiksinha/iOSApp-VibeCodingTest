@@ -13,7 +13,7 @@ struct FoodEditView: View {
     @FocusState private var isInputFocused: Bool
 
     @Bindable var food: FoodItem
-    
+
     let onSave: (() -> Void)?
 
     var body: some View {
@@ -31,12 +31,12 @@ struct FoodEditView: View {
                             }
                         }
                 }
-                
+
                 Section(header: Text(Constants.nutritionSection)) {
-                    Stepper("\(Constants.calories): \(food.calories)", value: $food.calories, in: 0...5000)
-                    Stepper("\(Constants.protein): \(food.protein)", value: $food.protein, in: 0...500)
-                    Stepper("\(Constants.carbs): \(food.carbs)", value: $food.carbs, in: 0...500)
-                    Stepper("\(Constants.fats): \(food.fats)", value: $food.fats, in: 0...200)
+                    Stepper("\(Constants.calories): \(food.calories)", value: $food.calories, in: 0 ... 5000)
+                    Stepper("\(Constants.protein): \(food.protein)", value: $food.protein, in: 0 ... 500)
+                    Stepper("\(Constants.carbs): \(food.carbs)", value: $food.carbs, in: 0 ... 500)
+                    Stepper("\(Constants.fats): \(food.fats)", value: $food.fats, in: 0 ... 200)
                 }
             }
             .navigationTitle(Constants.navTitle)
@@ -49,7 +49,7 @@ struct FoodEditView: View {
                     }
                     .disabled(!isValid)
                 }
-                
+
                 ToolbarItem(placement: .cancellationAction) {
                     Button(Constants.cancelButton) {
                         dismiss()
@@ -64,7 +64,7 @@ struct FoodEditView: View {
 
     private var isValid: Bool {
         !food.name.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty &&
-        food.calories >= 0 && food.protein >= 0 && food.carbs >= 0 && food.fats >= 0
+            food.calories >= 0 && food.protein >= 0 && food.carbs >= 0 && food.fats >= 0
     }
 
     private enum Constants {

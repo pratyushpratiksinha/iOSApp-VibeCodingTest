@@ -38,17 +38,41 @@ struct VisionAPIResponse: Codable, Equatable {
     let confidence: Double
     let timestamp: Date
 
-     init(foodItems: [FoodItemResponse], totalCalories: Int, confidence: Double, timestamp: Date = Date()) {
-         self.foodItems = foodItems
-         self.totalCalories = totalCalories
-         self.confidence = confidence
-         self.timestamp = timestamp
-     }
+    enum CodingKeys: String, CodingKey {
+        case foodItems
+        case totalCalories
+        case confidence
+        case timestamp
+    }
 
-     static func == (lhs: VisionAPIResponse, rhs: VisionAPIResponse) -> Bool {
-         lhs.foodItems == rhs.foodItems &&
-         lhs.totalCalories == rhs.totalCalories &&
-         lhs.confidence == rhs.confidence &&
-         lhs.timestamp.timeIntervalSince1970 == rhs.timestamp.timeIntervalSince1970 // Compare timestamps for Equatable
-     }
+    init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        foodItems = try container.decode([FoodItemResponse].self, forKey: .foodItems)
+        totalCalories = try container.decode(Int.self, forKey: .totalCalories)
+        confidence = try container.decode(Double.self, forKey: .confidence)
+        let timestampMs = try container.decode(Double.self, forKey: .timestamp)
+        timestamp = Date(timeIntervalSince1970: timestampMs / 1000.0) // Convert ms to seconds
+    }
+
+    func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encode(foodItems, forKey: .foodItems)
+        try container.encode(totalCalories, forKey: .totalCalories)
+        try container.encode(confidence, forKey: .confidence)
+        try container.encode(timestamp.timeIntervalSince1970 * 1000.0, forKey: .timestamp) // Convert seconds to ms
+    }
+
+    init(foodItems: [FoodItemResponse], totalCalories: Int, confidence: Double, timestamp: Date = Date()) {
+        self.foodItems = foodItems
+        self.totalCalories = totalCalories
+        self.confidence = confidence
+        self.timestamp = timestamp
+    }
+
+    static func == (lhs: VisionAPIResponse, rhs: VisionAPIResponse) -> Bool {
+        lhs.foodItems == rhs.foodItems &&
+            lhs.totalCalories == rhs.totalCalories &&
+            lhs.confidence == rhs.confidence &&
+            lhs.timestamp.timeIntervalSince1970 == rhs.timestamp.timeIntervalSince1970 // Compare timestamps for Equatable
+    }
 }

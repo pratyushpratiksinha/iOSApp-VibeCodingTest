@@ -20,7 +20,7 @@ struct FloatingActionButton: View {
                 .shadow(radius: 4)
         }
     }
-    
+
     private enum Constants {
         static let plusIcon = "plus"
     }

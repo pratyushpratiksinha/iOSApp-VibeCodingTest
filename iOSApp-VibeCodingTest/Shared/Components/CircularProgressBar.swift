@@ -12,7 +12,7 @@ struct CircularProgressBar: View {
     let image: String
     let color: Color
     let lineWidth: CGFloat
-    
+
     var body: some View {
         ZStack {
             Circle()

@@ -5,8 +5,8 @@
 //  Created by Pratyush Pratik Sinha on 23/05/25.
 //
 
-import SwiftUI
 import SwiftData
+import SwiftUI
 
 struct HomeView: View {
     @Query(sort: [SortDescriptor(\FoodItem.timestamp, order: .reverse)]) private var allFoods: [FoodItem]
@@ -26,7 +26,8 @@ struct HomeView: View {
                         AppBar(viewModel: viewModel, selectedDate: $selectedDate)
                         CalorieSummaryCard(
                             caloriesConsumed: $viewModel.caloriesConsumed,
-                            calorieGoal: $viewModel.calorieGoal)
+                            calorieGoal: $viewModel.calorieGoal
+                        )
                         MacrosSummaryView(
                             proteinConsumed: $viewModel.proteinConsumed,
                             proteinGoal: $viewModel.proteinGoal,
@@ -40,7 +41,7 @@ struct HomeView: View {
                     .padding(.horizontal, Constants.horizontalPadding)
                     .padding(.top, Constants.topPadding)
                 }
-                
+
                 FloatingActionButton(action: { viewModel.showCamera = true })
                     .padding(Constants.fabPadding)
             }
@@ -68,6 +69,7 @@ struct HomeView: View {
     }
 
     // MARK: - App Bar
+
     private struct AppBar: View {
         var viewModel: HomeViewModel
         @Binding var selectedDate: HomeViewModel.DateSelection
@@ -87,10 +89,11 @@ struct HomeView: View {
     }
 
     // MARK: - TodayYesterday Data
+
     private struct TodayYesterdayDataView: View {
         var viewModel: HomeViewModel
         let selectedDate: HomeViewModel.DateSelection
-        
+
         var body: some View {
             LazyVStack(alignment: .leading, spacing: 8) {
                 if selectedDate == .today {
@@ -107,6 +110,7 @@ struct HomeView: View {
     }
 
     // MARK: - Constants
+
     private enum Constants {
         static let appName = "Vibe Coding Test"
         static let recentlyUploaded = "Recently uploaded"

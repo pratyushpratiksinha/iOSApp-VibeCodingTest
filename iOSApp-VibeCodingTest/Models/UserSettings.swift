@@ -16,7 +16,7 @@ final class UserSettings {
     var proteinGoal: Int
     var carbsGoal: Int
     var fatsGoal: Int
-    
+
     init(
         id: UUID = UUID(),
         userName: String = "",

@@ -15,7 +15,7 @@ struct LoginView: View {
 
     init() {
         let usernameBinding = Binding.appStorage(AppStorageKeys.username, default: "")
-        self.viewModel = LoginViewModel(username: usernameBinding)
+        viewModel = LoginViewModel(username: usernameBinding)
     }
 
     var body: some View {
@@ -27,7 +27,7 @@ struct LoginView: View {
             TextField(Constants.textFieldPlaceholder, text: $enteredUsername)
                 .textFieldStyle(.roundedBorder)
                 .padding(.horizontal, Constants.horizontalPadding)
-            
+
             Button(Constants.buttonTitle) {
                 withAnimation {
                     isVisible = false
