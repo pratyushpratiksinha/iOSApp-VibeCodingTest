@@ -58,6 +58,9 @@
         ],
         "Service": [
           "CameraService.swift"
+        ],
+        "Auxiliary": [
+          "CameraServiceError.swift"
         ]
       },
       "Analysis": {
@@ -96,7 +99,8 @@
         "Binding+Extension.swift",
         "Date+Extension.swift",
         "DateFormatter+Extension.swift",
-        "UIImage+Extension.swift"
+        "UIImage+Extension.swift",
+        "String+Extension.swift"
       ]
     },
     "Resources": [
