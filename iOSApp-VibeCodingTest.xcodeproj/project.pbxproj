@@ -10,9 +10,22 @@
 		A885E9A22DE0C231007AE011 /* iOSApp-VibeCodingTest.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "iOSApp-VibeCodingTest.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		A8F6422D2DE4273F00569A9D /* Exceptions for "iOSApp-VibeCodingTest" folder in "iOSApp-VibeCodingTest" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = A885E9A12DE0C231007AE011 /* iOSApp-VibeCodingTest */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
+
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		A885E9A42DE0C231007AE011 /* iOSApp-VibeCodingTest */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				A8F6422D2DE4273F00569A9D /* Exceptions for "iOSApp-VibeCodingTest" folder in "iOSApp-VibeCodingTest" target */,
+			);
 			path = "iOSApp-VibeCodingTest";
 			sourceTree = "<group>";
 		};
@@ -254,6 +267,7 @@
 				DEVELOPMENT_TEAM = 3K6JQ87GJE;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "iOSApp-VibeCodingTest/Info.plist";
 				INFOPLIST_KEY_NSCameraUsageDescription = "This app uses the camera to capture food images for nutrition analysis.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
@@ -284,6 +298,7 @@
 				DEVELOPMENT_TEAM = 3K6JQ87GJE;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "iOSApp-VibeCodingTest/Info.plist";
 				INFOPLIST_KEY_NSCameraUsageDescription = "This app uses the camera to capture food images for nutrition analysis.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;

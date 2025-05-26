@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>OPENROUTER_API_KEY</key>
+	<string>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</string>
+	<key>API_BASE_URL</key>
+	<string>https://openrouter.ai/api/v1/chat/completions</string>
+</dict>
+</plist>

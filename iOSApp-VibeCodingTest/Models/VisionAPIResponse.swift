@@ -37,12 +37,14 @@ struct VisionAPIResponse: Codable, Equatable {
     let totalCalories: Int
     let confidence: Double
     let timestamp: Date
+    let maxTokensLeft: Int
 
     enum CodingKeys: String, CodingKey {
         case foodItems
         case totalCalories
         case confidence
         case timestamp
+        case maxTokensLeft
     }
 
     init(from decoder: Decoder) throws {
@@ -51,7 +53,8 @@ struct VisionAPIResponse: Codable, Equatable {
         totalCalories = try container.decode(Int.self, forKey: .totalCalories)
         confidence = try container.decode(Double.self, forKey: .confidence)
         let timestampMs = try container.decode(Double.self, forKey: .timestamp)
-        timestamp = Date(timeIntervalSince1970: timestampMs / 1000.0) // Convert ms to seconds
+        timestamp = Date(timeIntervalSince1970: timestampMs / 1000.0)
+        maxTokensLeft = try container.decode(Int.self, forKey: .maxTokensLeft)
     }
 
     func encode(to encoder: Encoder) throws {
@@ -59,14 +62,16 @@ struct VisionAPIResponse: Codable, Equatable {
         try container.encode(foodItems, forKey: .foodItems)
         try container.encode(totalCalories, forKey: .totalCalories)
         try container.encode(confidence, forKey: .confidence)
-        try container.encode(timestamp.timeIntervalSince1970 * 1000.0, forKey: .timestamp) // Convert seconds to ms
+        try container.encode(timestamp.timeIntervalSince1970 * 1000.0, forKey: .timestamp)
+        try container.encode(maxTokensLeft, forKey: .maxTokensLeft)
     }
 
-    init(foodItems: [FoodItemResponse], totalCalories: Int, confidence: Double, timestamp: Date = Date()) {
+    init(foodItems: [FoodItemResponse], totalCalories: Int, confidence: Double, timestamp: Date = Date(), maxTokenLeft: Int = 0) {
         self.foodItems = foodItems
         self.totalCalories = totalCalories
         self.confidence = confidence
         self.timestamp = timestamp
+        self.maxTokensLeft = maxTokenLeft
     }
 
     static func == (lhs: VisionAPIResponse, rhs: VisionAPIResponse) -> Bool {

@@ -13,6 +13,8 @@ struct CameraProcessingView: View {
     @State private var viewModel: CameraProcessingViewModel
     let onSave: (FoodItemResponse) -> Void
     let onCancel: () -> Void
+    @State private var showErrorAlert = false
+    @State private var errorMessage = ""
 
     @FocusState private var isInputFocused: Bool
 
@@ -44,10 +46,10 @@ struct CameraProcessingView: View {
                             .focused($isInputFocused)
 
                         LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: Constants.gridSpacing) {
-                            nutritionField(icon: "flame.fill", title: Constants.caloriesLabel, value: $viewModel.calories, color: .orange)
-                            nutritionField(icon: "leaf.fill", title: Constants.carbsLabel, value: $viewModel.carbs, color: .green)
-                            nutritionField(icon: "fork.knife", title: Constants.proteinLabel, value: $viewModel.protein, color: .red)
-                            nutritionField(icon: "drop.fill", title: Constants.fatsLabel, value: $viewModel.fats, color: .purple)
+                            nutritionField(icon: Constants.caloriesIcon, title: Constants.caloriesLabel, value: $viewModel.calories, color: .orange)
+                            nutritionField(icon: Constants.carbsIcon, title: Constants.carbsLabel, value: $viewModel.carbs, color: .green)
+                            nutritionField(icon: Constants.proteinIcon, title: Constants.proteinLabel, value: $viewModel.protein, color: .red)
+                            nutritionField(icon: Constants.fatsIcon, title: Constants.fatsLabel, value: $viewModel.fats, color: .purple)
                         }
                         .padding(.top, 8)
 
@@ -110,6 +112,13 @@ struct CameraProcessingView: View {
                 }
             }
         }
+        .alert(Constants.errorTitle, isPresented: $showErrorAlert) {
+            Button(Constants.okTitle) {
+                onCancel()
+            }
+        } message: {
+            Text(errorMessage)
+        }
     }
 
     private func nutritionField(icon: String, title: String, value: Binding<String>, color: Color) -> some View {
@@ -150,10 +159,29 @@ struct CameraProcessingView: View {
         static let proteinLabel = "Protein"
         static let carbsLabel = "Carbs"
         static let fatsLabel = "Fats"
+        
+        static let caloriesIcon = "flame.fill"
+        static let carbsIcon = "leaf.fill"
+        static let proteinIcon = "fork.knife"
+        static let fatsIcon = "drop.fill"
 
         static let fixButtonTitle = "Fix Results                           "
         static let doneButtonTitle = "Done                               "
         static let retakeButtonTitle = "Retake"
         static let cancelButtonTitle = "Cancel"
+        static let errorTitle = "Analysis Error"
+        static let okTitle = "OK"
+    }
+}
+
+extension CameraProcessingView {
+    func handleError(_ error: Error) {
+        if let cameraError = error as? CameraServiceError {
+            errorMessage = cameraError.localizedDescription
+            showErrorAlert = true
+        } else {
+            errorMessage = "An unexpected error occurred. Please try again."
+            showErrorAlert = true
+        }
     }
 }

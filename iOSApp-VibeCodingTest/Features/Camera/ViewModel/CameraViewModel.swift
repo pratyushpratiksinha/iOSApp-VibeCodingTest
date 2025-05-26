@@ -27,10 +27,8 @@ final class CameraViewModel {
     var analysisResult: VisionAPIResponse?
 
     // MARK: - Initialization
-
     init() {
-        let apiKey = "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"
-        cameraService = CameraService(apiKey: apiKey)
+        cameraService = CameraService()
     }
 
     // MARK: - Public Methods
@@ -43,8 +41,32 @@ final class CameraViewModel {
             let result = try await cameraService.analyzeFoodImage(image)
             analysisResult = result
             state = .result
+        } catch let error as CameraServiceError {
+            switch error {
+            case .noFoodDetected:
+                state = .error(error.localizedDescription)
+            default:
+                let rawError = error.localizedDescription
+                let prefix = "API Error (402):"
+
+                let jsonString = rawError.jsonPayloadAfterPrefix(prefix)
+
+                if let errorDict = jsonString.toDictionary(),
+                   let errorInfo = errorDict["error"] as? [String: Any],
+                   let message = errorInfo["message"] as? String {
+                    
+                    let tokenLeft = message.extractAffordableMaxToken()
+                    if let tokenLeft = tokenLeft {
+                        UserDefaults.standard.set(tokenLeft - 4, forKey: AppStorageKeys.maxTokensKey)
+                    }
+                    
+                    state = .error("Failed to analyze image: \(message)")
+                } else {
+                    state = .error("Failed to analyze image: \(rawError)")
+                }
+            }
         } catch {
-            state = .error(error.localizedDescription)
+            state = .error("An unexpected error occurred: \(error.localizedDescription)")
         }
     }
 

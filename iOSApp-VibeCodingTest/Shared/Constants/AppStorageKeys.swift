@@ -9,4 +9,5 @@ import Foundation
 
 enum AppStorageKeys {
     static let username = "username"
+    static let maxTokensKey = "maxTokensLeft"
 }

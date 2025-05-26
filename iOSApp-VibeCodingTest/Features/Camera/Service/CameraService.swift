@@ -9,14 +9,26 @@ import Foundation
 import UIKit
 
 actor CameraService {
-    private let apiKey: String
-    private let baseURL = "https://api.openai.com/v1/chat/completions"
+    private let apiKey = AppConfig.apiKey
+    private let baseURL = AppConfig.baseURL
+    private var maxTokensLeft: Int
 
-    init(apiKey: String) {
-        self.apiKey = apiKey
+    init() {
+        self.maxTokensLeft = UserDefaults.standard.integer(forKey: AppStorageKeys.maxTokensKey)
+        if self.maxTokensLeft == 0 {
+            self.maxTokensLeft = Constants.defaultMaxTokens
+            UserDefaults.standard.set(Constants.defaultMaxTokens, forKey: AppStorageKeys.maxTokensKey)
+        }
+    }
+
+    private func updateMaxTokens(_ newValue: Int) {
+        maxTokensLeft = newValue
+        UserDefaults.standard.set(newValue, forKey: AppStorageKeys.maxTokensKey)
     }
 
     func analyzeFoodImage(_ image: UIImage) async throws -> VisionAPIResponse {
+        self.maxTokensLeft = UserDefaults.standard.integer(forKey: AppStorageKeys.maxTokensKey)
+
         let resized = image.scaledDown(toMaxDimension: 1024)
         guard let imageData = resized.jpegData(compressionQuality: 0.6) else {
             throw CameraServiceError.invalidImage
@@ -25,14 +37,15 @@ actor CameraService {
         let base64Image = imageData.base64EncodedString()
 
         let requestBody: [String: Any] = [
-            "model": "gpt-4-vision-preview",
+            "model": Constants.model,
+            "max_tokens": maxTokensLeft,
             "messages": [
                 [
                     "role": "user",
                     "content": [
                         [
                             "type": "text",
-                            "text": "Analyze this food image and provide nutritional information. Return the response in the following JSON format: {\"foodItems\": [{\"name\": \"food name\", \"calories\": number, \"proteins\": number, \"carbs\": number, \"fats\": number}], \"totalCalories\": number, \"confidence\": number}",
+                            "text": Constants.analysisPromptPrefix + "\(maxTokensLeft) minus the compeltion tokens minus \(Constants.tokenAdjustment) used in this response (based on response length). Exclude any items not visible in the image."
                         ],
                         [
                             "type": "image_url",
@@ -43,7 +56,6 @@ actor CameraService {
                     ],
                 ],
             ],
-            "max_tokens": 500,
         ]
 
         guard let url = URL(string: baseURL) else {
@@ -52,12 +64,12 @@ actor CameraService {
 
         var request = URLRequest(url: url)
         request.httpMethod = "POST"
-        request.setValue("Bearer \(apiKey)", forHTTPHeaderField: "Authorization")
-        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        request.setValue("\(Constants.authPrefix)\(apiKey)", forHTTPHeaderField: "Authorization")
+        request.setValue(Constants.contentType, forHTTPHeaderField: "Content-Type")
         request.httpBody = try JSONSerialization.data(withJSONObject: requestBody)
 
         let (data, response) = try await URLSession.shared.data(for: request)
-
+        
         guard let httpResponse = response as? HTTPURLResponse else {
             throw CameraServiceError.invalidResponse
         }
@@ -68,60 +80,81 @@ actor CameraService {
 
         do {
             let decoder = JSONDecoder()
-            let apiResponse = try decoder.decode(OpenAIResponse.self, from: data)
+            let apiResponse = try decoder.decode(OpenRouterResponse.self, from: data)
+            
+            guard let content = apiResponse.choices.first?.message.content else {
+                throw CameraServiceError.decodingError
+            }
+            
+            if content.contains("I'm unable to analyze food from this image") || content.contains("The image does not contain any visible food items") {
+                throw CameraServiceError.noFoodDetected
+            }
 
-            guard let content = apiResponse.choices.first?.message.content,
-                  let jsonData = content.data(using: .utf8),
-                  let visionResponse = try? decoder.decode(VisionAPIResponse.self, from: jsonData)
-            else {
+            guard let start = content.range(of: "{"),
+                  let end = content.range(of: "}", options: .backwards) else {
                 throw CameraServiceError.decodingError
             }
 
+            let jsonString = String(content[start.lowerBound...end.upperBound])
+            guard let jsonData = jsonString.data(using: .utf8) else {
+                throw CameraServiceError.decodingError
+            }
+
+            guard let visionResponse = try? decoder.decode(VisionAPIResponse.self, from: jsonData)
+            else {
+                if let errorMessage = String(data: data, encoding: .utf8),
+                   errorMessage.contains("I'm unable to analyze food from this image") {
+                    throw CameraServiceError.noFoodDetected
+                }
+                throw CameraServiceError.decodingError
+            }
+
+            if visionResponse.foodItems.isEmpty {
+                updateMaxTokens(visionResponse.maxTokensLeft)
+                throw CameraServiceError.noFoodDetected
+            }
+
+            updateMaxTokens(visionResponse.maxTokensLeft)
             return visionResponse
         } catch {
+            if let cameraError = error as? CameraServiceError {
+                throw cameraError
+            }
             throw CameraServiceError.decodingError
         }
     }
-}
+    
+    private enum Constants {
+        static let baseURL = "https://openrouter.ai/api/v1/chat/completions"
+        static let model = "openai/gpt-4o"
+        static let contentType = "application/json"
+        static let authPrefix = "Bearer "
+        static let defaultMaxTokens = 3990
+        static let tokenAdjustment = 20
 
-// MARK: - Error Types
+        static let analysisPromptPrefix = """
+        Analyze the food in this image and provide a JSON response matching the following Swift structs:
 
-enum CameraServiceError: LocalizedError {
-    case invalidImage
-    case invalidURL
-    case invalidResponse
-    case apiError(statusCode: Int, data: Data)
-    case decodingError
-
-    var errorDescription: String? {
-        switch self {
-        case .invalidImage:
-            return "Failed to process the image"
-        case .invalidURL:
-            return "Invalid API URL"
-        case .invalidResponse:
-            return "Invalid response from server"
-        case let .apiError(statusCode, data):
-            if let errorMessage = String(data: data, encoding: .utf8) {
-                return "API Error (\(statusCode)): \(errorMessage)"
-            }
-            return "API Error (\(statusCode))"
-        case .decodingError:
-            return "Failed to decode the response"
+        ```swift
+        struct FoodItemResponse: Codable, Identifiable, Equatable {
+            let id: UUID
+            var name: String
+            var calories: Int
+            var proteins: Double
+            var carbs: Double
+            var fats: Double
+            var portion: String?
         }
-    }
-}
 
-// MARK: - Response Types
+        struct VisionAPIResponse: Codable, Equatable {
+            var foodItems: [FoodItemResponse]
+            let totalCalories: Int
+            let confidence: Double
+            let timestamp: Date
+            let maxTokensLeft: Int
+        }
 
-struct OpenAIResponse: Codable {
-    let choices: [Choice]
-
-    struct Choice: Codable {
-        let message: Message
-    }
-
-    struct Message: Codable {
-        let content: String
+        Return a single FoodItemResponse in the foodItems array, representing the entire meal. Generate a UUID for the id, estimate nutritional values (calories, proteins, carbs, fats) for the combined meal, and include a portion description summarizing the meal. Provide the total calories (matching the single item's calories), a confidence score (0.0 to 1.0), the current timestamp as a Unix timestamp in milliseconds (e.g., 1743128460000), and an estimated maxTokensLeft calculated as
+        """
     }
 }
