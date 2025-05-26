@@ -159,7 +159,7 @@ struct CameraProcessingView: View {
         static let proteinLabel = "Protein"
         static let carbsLabel = "Carbs"
         static let fatsLabel = "Fats"
-        
+
         static let caloriesIcon = "flame.fill"
         static let carbsIcon = "leaf.fill"
         static let proteinIcon = "fork.knife"

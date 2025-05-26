@@ -8,8 +8,6 @@
 import Foundation
 import UIKit
 
-/// Represents a single food item returned by the Vision API.
-/// Note: Macros are typically returned as Doubles by APIs, and this struct reflects that.
 struct FoodItemResponse: Codable, Identifiable, Equatable {
     let id: UUID
     var name: String
@@ -19,7 +17,6 @@ struct FoodItemResponse: Codable, Identifiable, Equatable {
     var fats: Double
     var portion: String?
 
-    // Custom initializer to provide default ID
     init(id: UUID = UUID(), name: String, calories: Int, proteins: Double, carbs: Double, fats: Double, portion: String? = nil) {
         self.id = id
         self.name = name
@@ -31,7 +28,6 @@ struct FoodItemResponse: Codable, Identifiable, Equatable {
     }
 }
 
-/// Represents the overall response structure from the Vision API.
 struct VisionAPIResponse: Codable, Equatable {
     var foodItems: [FoodItemResponse]
     let totalCalories: Int
@@ -78,6 +74,6 @@ struct VisionAPIResponse: Codable, Equatable {
         lhs.foodItems == rhs.foodItems &&
             lhs.totalCalories == rhs.totalCalories &&
             lhs.confidence == rhs.confidence &&
-            lhs.timestamp.timeIntervalSince1970 == rhs.timestamp.timeIntervalSince1970 // Compare timestamps for Equatable
+            lhs.timestamp.timeIntervalSince1970 == rhs.timestamp.timeIntervalSince1970
     }
 }

@@ -19,19 +19,14 @@ final class CameraViewModel {
         case error(String)
     }
 
-    // MARK: - Properties
-
     private let cameraService: CameraService
     var state: State = .idle
     var capturedImage: UIImage?
     var analysisResult: VisionAPIResponse?
 
-    // MARK: - Initialization
     init() {
         cameraService = CameraService()
     }
-
-    // MARK: - Public Methods
 
     func analyzeImage(_ image: UIImage) async {
         state = .analyzing
@@ -54,12 +49,11 @@ final class CameraViewModel {
                 if let errorDict = jsonString.toDictionary(),
                    let errorInfo = errorDict["error"] as? [String: Any],
                    let message = errorInfo["message"] as? String {
-                    
                     let tokenLeft = message.extractAffordableMaxToken()
-                    if let tokenLeft = tokenLeft {
+                    if let tokenLeft {
                         UserDefaults.standard.set(tokenLeft - 4, forKey: AppStorageKeys.maxTokensKey)
                     }
-                    
+
                     state = .error("Failed to analyze image: \(message)")
                 } else {
                     state = .error("Failed to analyze image: \(rawError)")

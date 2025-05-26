@@ -14,8 +14,7 @@ struct FoodCard: View {
     var body: some View {
         HStack(spacing: 12) {
             if let imageData = food.imageData,
-               let uiImage = UIImage(data: imageData)
-            {
+               let uiImage = UIImage(data: imageData) {
                 Image(uiImage: uiImage)
                     .resizable()
                     .scaledToFill()

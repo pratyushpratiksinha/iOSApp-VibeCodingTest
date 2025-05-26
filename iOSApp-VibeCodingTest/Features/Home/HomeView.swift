@@ -68,8 +68,6 @@ struct HomeView: View {
         }
     }
 
-    // MARK: - App Bar
-
     private struct AppBar: View {
         var viewModel: HomeViewModel
         @Binding var selectedDate: HomeViewModel.DateSelection
@@ -87,8 +85,6 @@ struct HomeView: View {
             }
         }
     }
-
-    // MARK: - TodayYesterday Data
 
     private struct TodayYesterdayDataView: View {
         var viewModel: HomeViewModel
@@ -108,8 +104,6 @@ struct HomeView: View {
             }
         }
     }
-
-    // MARK: - Constants
 
     private enum Constants {
         static let appName = "Vibe Coding Test"

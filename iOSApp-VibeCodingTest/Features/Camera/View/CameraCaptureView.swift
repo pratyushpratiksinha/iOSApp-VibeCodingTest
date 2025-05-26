@@ -32,8 +32,7 @@ struct CameraCaptureView: UIViewControllerRepresentable {
 
         func photoOutput(_: AVCapturePhotoOutput,
                          didFinishProcessingPhoto photo: AVCapturePhoto,
-                         error _: Error?)
-        {
+                         error _: Error?) {
             guard let data = photo.fileDataRepresentation(),
                   let image = UIImage(data: data) else { return }
             onCapture(image)

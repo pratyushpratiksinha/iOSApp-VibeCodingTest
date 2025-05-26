@@ -41,8 +41,7 @@ struct AnalysisView: View {
                         sectionView(date: date, items: items, summary: summary)
                             .onAppear {
                                 if grouped.count > viewModel.visibleSectionCount,
-                                   date == visibleGroups.last?.key
-                                {
+                                   date == visibleGroups.last?.key {
                                     viewModel.visibleSectionCount += 10
                                 }
                             }

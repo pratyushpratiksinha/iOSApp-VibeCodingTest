@@ -14,9 +14,9 @@ actor CameraService {
     private var maxTokensLeft: Int
 
     init() {
-        self.maxTokensLeft = UserDefaults.standard.integer(forKey: AppStorageKeys.maxTokensKey)
-        if self.maxTokensLeft == 0 {
-            self.maxTokensLeft = Constants.defaultMaxTokens
+        maxTokensLeft = UserDefaults.standard.integer(forKey: AppStorageKeys.maxTokensKey)
+        if maxTokensLeft == 0 {
+            maxTokensLeft = Constants.defaultMaxTokens
             UserDefaults.standard.set(Constants.defaultMaxTokens, forKey: AppStorageKeys.maxTokensKey)
         }
     }
@@ -27,7 +27,7 @@ actor CameraService {
     }
 
     func analyzeFoodImage(_ image: UIImage) async throws -> VisionAPIResponse {
-        self.maxTokensLeft = UserDefaults.standard.integer(forKey: AppStorageKeys.maxTokensKey)
+        maxTokensLeft = UserDefaults.standard.integer(forKey: AppStorageKeys.maxTokensKey)
 
         let resized = image.scaledDown(toMaxDimension: 1024)
         guard let imageData = resized.jpegData(compressionQuality: 0.6) else {
@@ -45,7 +45,7 @@ actor CameraService {
                     "content": [
                         [
                             "type": "text",
-                            "text": Constants.analysisPromptPrefix + "\(maxTokensLeft) minus the compeltion tokens minus \(Constants.tokenAdjustment) used in this response (based on response length). Exclude any items not visible in the image."
+                            "text": Constants.analysisPromptPrefix + "\(maxTokensLeft) minus the compeltion tokens minus \(Constants.tokenAdjustment) used in this response (based on response length). Exclude any items not visible in the image.",
                         ],
                         [
                             "type": "image_url",
@@ -69,7 +69,7 @@ actor CameraService {
         request.httpBody = try JSONSerialization.data(withJSONObject: requestBody)
 
         let (data, response) = try await URLSession.shared.data(for: request)
-        
+
         guard let httpResponse = response as? HTTPURLResponse else {
             throw CameraServiceError.invalidResponse
         }
@@ -81,21 +81,22 @@ actor CameraService {
         do {
             let decoder = JSONDecoder()
             let apiResponse = try decoder.decode(OpenRouterResponse.self, from: data)
-            
+
             guard let content = apiResponse.choices.first?.message.content else {
                 throw CameraServiceError.decodingError
             }
-            
+
             if content.contains("I'm unable to analyze food from this image") || content.contains("The image does not contain any visible food items") {
                 throw CameraServiceError.noFoodDetected
             }
 
             guard let start = content.range(of: "{"),
-                  let end = content.range(of: "}", options: .backwards) else {
+                  let end = content.range(of: "}", options: .backwards)
+            else {
                 throw CameraServiceError.decodingError
             }
 
-            let jsonString = String(content[start.lowerBound...end.upperBound])
+            let jsonString = String(content[start.lowerBound ... end.upperBound])
             guard let jsonData = jsonString.data(using: .utf8) else {
                 throw CameraServiceError.decodingError
             }
@@ -123,7 +124,7 @@ actor CameraService {
             throw CameraServiceError.decodingError
         }
     }
-    
+
     private enum Constants {
         static let baseURL = "https://openrouter.ai/api/v1/chat/completions"
         static let model = "openai/gpt-4o"
