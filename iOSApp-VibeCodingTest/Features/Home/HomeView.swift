@@ -7,6 +7,7 @@
 
 import SwiftData
 import SwiftUI
+import UIKit
 
 struct HomeView: View {
     @Query(sort: [SortDescriptor(\FoodItem.timestamp, order: .reverse)]) private var allFoods: [FoodItem]
@@ -23,11 +24,18 @@ struct HomeView: View {
             ZStack(alignment: .bottomTrailing) {
                 ScrollView {
                     VStack(alignment: .leading, spacing: Constants.verticalSpacing) {
-                        AppBar(viewModel: viewModel, selectedDate: $selectedDate)
+                        Picker("Date", selection: $selectedDate) {
+                            ForEach(HomeViewModel.DateSelection.allCases, id: \.self) { date in
+                                Text(date.rawValue)
+                            }
+                        }
+                        .pickerStyle(.segmented)
+                        
                         CalorieSummaryCard(
                             caloriesConsumed: $viewModel.caloriesConsumed,
                             calorieGoal: $viewModel.calorieGoal
                         )
+                        
                         MacrosSummaryView(
                             proteinConsumed: $viewModel.proteinConsumed,
                             proteinGoal: $viewModel.proteinGoal,
@@ -36,6 +44,7 @@ struct HomeView: View {
                             fatsConsumed: $viewModel.fatsConsumed,
                             fatsGoal: $viewModel.fatsGoal
                         )
+                        
                         TodayYesterdayDataView(viewModel: viewModel, selectedDate: selectedDate)
                     }
                     .padding(.horizontal, Constants.horizontalPadding)
@@ -45,6 +54,7 @@ struct HomeView: View {
                 FloatingActionButton(action: { viewModel.showCamera = true })
                     .padding(Constants.fabPadding)
             }
+            .navigationTitle(Constants.appName)
             .sheet(isPresented: $viewModel.showCamera) {
                 CameraView()
             }
@@ -68,38 +78,38 @@ struct HomeView: View {
         }
     }
 
-    private struct AppBar: View {
-        var viewModel: HomeViewModel
-        @Binding var selectedDate: HomeViewModel.DateSelection
-        var body: some View {
-            HStack {
-                Text(Constants.appName)
-                    .font(.title2.bold())
-                Spacer()
-                Picker("Date", selection: $selectedDate) {
-                    ForEach(HomeViewModel.DateSelection.allCases, id: \.self) { date in
-                        Text(date.rawValue)
-                    }
-                }
-                .pickerStyle(.segmented)
-            }
-        }
-    }
-
     private struct TodayYesterdayDataView: View {
         var viewModel: HomeViewModel
         let selectedDate: HomeViewModel.DateSelection
 
         var body: some View {
-            LazyVStack(alignment: .leading, spacing: 8) {
-                if selectedDate == .today {
-                    Text(Constants.recentlyUploaded)
-                        .font(.headline)
+            if viewModel.foodsToday.isEmpty {
+                VStack {
+                    Spacer()
+                    VStack(spacing: 16) {
+                        Image(systemName: "fork.knife.circle.fill")
+                            .resizable()
+                            .scaledToFit()
+                            .frame(width: 120, height: 120)
+                            .foregroundColor(.gray.opacity(0.4))
+                        Text("No food data yet")
+                            .font(.headline)
+                            .foregroundColor(.gray)
+                    }
+                    Spacer()
                 }
-                ForEach(viewModel.foodsToday) { food in
-                    FoodCard(food: food, onTap: {
-                        viewModel.editingFood = food
-                    })
+                .frame(width: UIScreen.main.bounds.width - 32, height: UIScreen.main.bounds.height/2)
+            } else {
+                LazyVStack(alignment: .leading, spacing: 8) {
+                    if selectedDate == .today {
+                        Text(Constants.recentlyUploaded)
+                            .font(.headline)
+                    }
+                    ForEach(viewModel.foodsToday) { food in
+                        FoodCard(food: food, onTap: {
+                            viewModel.editingFood = food
+                        })
+                    }
                 }
             }
         }
