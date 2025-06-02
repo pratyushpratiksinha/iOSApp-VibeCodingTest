@@ -11,44 +11,193 @@ struct LoginView: View {
     @AppStorage(AppStorageKeys.username) private var username: String = ""
     @State private var enteredUsername: String = ""
     @State private var isVisible = true
+    @State private var isLoading = false
+    @State private var showError = false
+    @State private var errorMessage = ""
+    
     private let viewModel: LoginViewModel
-
+    
     init() {
         let usernameBinding = Binding.appStorage(AppStorageKeys.username, default: "")
         viewModel = LoginViewModel(username: usernameBinding)
     }
-
+    
     var body: some View {
-        VStack(spacing: Constants.verticalSpacing) {
-            Text(Constants.title)
-                .font(.largeTitle)
-                .bold()
+        ScrollView {
+            VStack(spacing: Constants.verticalSpacing) {
+                Spacer(minLength: Constants.spacerMinLength)
 
-            TextField(Constants.textFieldPlaceholder, text: $enteredUsername)
-                .textFieldStyle(.roundedBorder)
+                VStack(spacing: Constants.titleSpacing) {
+                    Image(systemName: "person.circle.fill")
+                        .resizable()
+                        .aspectRatio(contentMode: .fit)
+                        .frame(width: Constants.logoSize, height: Constants.logoSize)
+                        .foregroundColor(.primary)
+                        .symbolEffect(.bounce, options: .repeating, value: isVisible)
+                    
+                    Text(Constants.title)
+                        .font(.system(size: Constants.titleSize, weight: .bold, design: .rounded))
+                        .multilineTextAlignment(.center)
+                }
+                .padding(.top, Constants.topPadding)
+                
+                Spacer(minLength: Constants.spacerMinLength)
+                
+                VStack(spacing: Constants.inputSpacing) {
+                    TextField(Constants.textFieldPlaceholder, text: $enteredUsername)
+                        .textFieldStyle(CustomTextFieldStyle())
+                        .textInputAutocapitalization(.never)
+                        .autocorrectionDisabled()
+                        .submitLabel(.done)
+                        .onSubmit {
+                            submitIfValid()
+                        }
+                    
+                    if !enteredUsername.isEmpty {
+                        Text(Constants.usernameRequirements)
+                            .font(.caption)
+                            .foregroundColor(.secondary)
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                            .padding(.horizontal, Constants.horizontalPadding)
+                    }
+                }
                 .padding(.horizontal, Constants.horizontalPadding)
-
-            Button(Constants.buttonTitle) {
+                
+                Button(action: submitIfValid) {
+                    HStack {
+                        if isLoading {
+                            ProgressView()
+                                .tint(.white)
+                                .padding(.trailing, 8)
+                        }
+                        Text(Constants.buttonTitle)
+                    }
+                    .frame(maxWidth: .infinity)
+                    .frame(height: Constants.buttonHeight)
+                }
+                .buttonStyle(.borderedProminent)
+                .disabled(!isValidInput || isLoading)
+                .padding(.horizontal, Constants.horizontalPadding)
+                .padding(.top, Constants.buttonTopPadding)
+                
+                Spacer(minLength: Constants.spacerMinLength)
+            }
+            .padding(.horizontal)
+        }
+        .scrollDismissesKeyboard(.interactively)
+        .contentShape(Rectangle())
+        .onTapGesture {
+            UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
+        }
+        .opacity(isVisible ? 1 : 0)
+        .animation(.easeInOut(duration: 0.4), value: isVisible)
+        .alert(Constants.errorTitle, isPresented: $showError) {
+            Button(Constants.errorButtonTitle, role: .cancel) {}
+        } message: {
+            Text(errorMessage)
+        }
+    }
+    
+    private var isValidInput: Bool {
+        let trimmed = enteredUsername.trimmingCharacters(in: .whitespaces)
+        return !trimmed.isEmpty && trimmed.count >= Constants.minUsernameLength
+    }
+    
+    private func submitIfValid() {
+        guard isValidInput else { return }
+        
+        withAnimation {
+            isLoading = true
+        }
+        
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+            do {
+                try viewModel.validateUsername(enteredUsername)
                 withAnimation {
                     isVisible = false
                 }
                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) {
                     viewModel.submit(name: enteredUsername)
                 }
+            } catch {
+                errorMessage = error.localizedDescription
+                showError = true
             }
-            .disabled(enteredUsername.trimmingCharacters(in: .whitespaces).isEmpty)
-            .buttonStyle(.borderedProminent)
+            
+            withAnimation {
+                isLoading = false
+            }
         }
-        .padding()
-        .opacity(isVisible ? 1 : 0)
-        .animation(.easeInOut(duration: 0.4), value: isVisible)
     }
-
+    
     private enum Constants {
-        static let title = "Welcome to Vibe Coding Test"
+        static let title = "Welcome to Vibe"
         static let textFieldPlaceholder = "Enter your name"
-        static let buttonTitle = "Continue"
-        static let verticalSpacing: CGFloat = 24
-        static let horizontalPadding: CGFloat = 16
+        static let buttonTitle = "Login"
+        static let errorTitle = "Invalid Username"
+        static let errorButtonTitle = "OK"
+        static let usernameRequirements = "Username must be at least 3 characters long"
+        
+        static let verticalSpacing: CGFloat = 32
+        static let titleSpacing: CGFloat = 16
+        static let inputSpacing: CGFloat = 8
+        static let horizontalPadding: CGFloat = 24
+        static let topPadding: CGFloat = 48
+        static let buttonTopPadding: CGFloat = 16
+        static let buttonHeight: CGFloat = 40
+        static let logoSize: CGFloat = 80
+        static let titleSize: CGFloat = 28
+        static let minUsernameLength = 3
+        static let spacerMinLength: CGFloat = 40
+        static let textFieldPadding: CGFloat = 16
+    }
+}
+
+struct CustomTextFieldStyle: TextFieldStyle {
+    func _body(configuration: TextField<Self._Label>) -> some View {
+        configuration
+            .padding(.horizontal, Constants.textFieldPadding)
+            .padding(.vertical, Constants.textFieldVerticalPadding)
+            .background(Color(.systemGray6))
+            .cornerRadius(12)
+            .overlay(
+                RoundedRectangle(cornerRadius: 12)
+                    .stroke(Color(.systemGray4), lineWidth: 1)
+            )
+    }
+    
+    private enum Constants {
+        static let textFieldPadding: CGFloat = 16
+        static let textFieldVerticalPadding: CGFloat = 12
+    }
+}
+
+#Preview {
+    LoginView()
+}
+
+extension LoginViewModel {
+    func validateUsername(_ username: String) throws {
+        let trimmed = username.trimmingCharacters(in: .whitespaces)
+        if trimmed.isEmpty {
+            throw ValidationError.emptyUsername
+        }
+        if trimmed.count < 3 {
+            throw ValidationError.tooShort
+        }
+    }
+    
+    enum ValidationError: LocalizedError {
+        case emptyUsername
+        case tooShort
+        
+        var errorDescription: String? {
+            switch self {
+            case .emptyUsername:
+                return "Username cannot be empty"
+            case .tooShort:
+                return "Username must be at least 3 characters long"
+            }
+        }
     }
 }
