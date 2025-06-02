@@ -13,64 +13,104 @@ struct GoalSettingsView: View {
     @Environment(\.dismiss) private var dismiss
     @Query private var userSettings: [UserSettings]
     @State private var viewModel: GoalSettingsViewModel? = nil
-    @FocusState private var isInputFocused: Bool
-
+    @State private var showValidationError = false
+    @State private var validationMessage = ""
+    
     var body: some View {
         NavigationStack {
             Group {
                 if let unwrapped = viewModel {
                     @Bindable var model = unwrapped
-
+                    
                     Form {
-                        Section(header: Text(Constants.calorieSection)) {
-                            TextField(Constants.calorieGoal, text: $model.calorieGoal)
-                                .keyboardType(.numberPad)
-                                .focused($isInputFocused)
+                        Section {
+                            MacroInputField(
+                                title: AppConstants.Nutrients.Titles.calories,
+                                value: $model.calorieGoal,
+                                icon: AppConstants.Nutrients.Icons.caloriesDefault,
+                                color: AppConstants.Nutrients.Colors.calories,
+                                unit: AppConstants.Nutrients.Units.calories,
+                                isFocused: model.isCaloriesFocused
+                            )
+                            
+                            MacroInputField(
+                                title: AppConstants.Nutrients.Titles.protein,
+                                value: $model.proteinGoal,
+                                icon: AppConstants.Nutrients.Icons.proteinDefault,
+                                color: AppConstants.Nutrients.Colors.protein,
+                                unit: AppConstants.Nutrients.Units.protein,
+                                isFocused: model.isProteinFocused
+                            )
+                            
+                            MacroInputField(
+                                title: AppConstants.Nutrients.Titles.carbs,
+                                value: $model.carbsGoal,
+                                icon: AppConstants.Nutrients.Icons.carbsDefault,
+                                color: AppConstants.Nutrients.Colors.carbs,
+                                unit: AppConstants.Nutrients.Units.carbs,
+                                isFocused: model.isCarbsFocused
+                            )
+                            
+                            MacroInputField(
+                                title: AppConstants.Nutrients.Titles.fats,
+                                value: $model.fatsGoal,
+                                icon: AppConstants.Nutrients.Icons.fatsDefault,
+                                color: AppConstants.Nutrients.Colors.fats,
+                                unit: AppConstants.Nutrients.Units.fats,
+                                isFocused: model.isFatsFocused
+                            )
+                        } header: {
+                            Text(Constants.inputSectionHeader)
+                        } footer: {
+                            if !model.validationErrors.isEmpty {
+                                Text(model.validationErrors.joined(separator: "\n"))
+                                    .foregroundColor(.red)
+                                    .font(.caption)
+                            }
                         }
-
-                        Section(header: Text(Constants.proteinSection)) {
-                            TextField(Constants.proteinGoal, text: $model.proteinGoal)
-                                .keyboardType(.numberPad)
-                                .focused($isInputFocused)
+                        
+                        Section {
+                            Button {
+                                Task { @MainActor in
+                                    await saveGoals(model)
+                                }
+                            } label: {
+                                HStack {
+                                    if model.isLoading {
+                                        ProgressView()
+                                            .tint(.white)
+                                            .padding(.trailing, 8)
+                                    }
+                                    Text(Constants.saveButton)
+                                }
+                                .frame(maxWidth: .infinity)
+                                .frame(height: AppConstants.UI.buttonHeight)
+                            }
+                            .buttonStyle(.borderedProminent)
+                            .disabled(!model.isValid || model.isLoading)
+                            .padding(.horizontal, AppConstants.UI.horizontalPadding)
+                            .padding(.top, AppConstants.UI.buttonTopPadding)
                         }
-
-                        Section(header: Text(Constants.carbsSection)) {
-                            TextField(Constants.carbsGoal, text: $model.carbsGoal)
-                                .keyboardType(.numberPad)
-                                .focused($isInputFocused)
-                        }
-
-                        Section(header: Text(Constants.fatsSection)) {
-                            TextField(Constants.fatsGoal, text: $model.fatsGoal)
-                                .keyboardType(.numberPad)
-                                .focused($isInputFocused)
-                        }
+                        .listRowInsets(EdgeInsets())
+                        .listRowBackground(Color.clear)
                     }
+                    .scrollDismissesKeyboard(.interactively)
                     .navigationTitle(Constants.title)
-                    .toolbar {
-                        ToolbarItem(placement: .confirmationAction) {
-                            Button(Constants.saveButton) {
-                                try? model.saveGoals()
-                                dismiss()
-                            }
-                            .disabled(!model.isValid)
-                        }
-
-                        ToolbarItem(placement: .cancellationAction) {
-                            Button(Constants.cancelButton) {
-                                dismiss()
-                            }
-                        }
-
-                        ToolbarItemGroup(placement: .keyboard) {
-                            Spacer()
-                            Button(Constants.doneButtonTitle) {
-                                isInputFocused = false
-                            }
-                        }
+                    .alert(Constants.errorTitle, isPresented: $showValidationError) {
+                        Button(Constants.errorButtonTitle, role: .cancel) {}
+                    } message: {
+                        Text(validationMessage)
                     }
-                    .onTapGesture {
-                        isInputFocused = false
+                    .overlay {
+                        if model.isLoading {
+                            Color.black.opacity(0.2)
+                                .ignoresSafeArea()
+                                .overlay {
+                                    ProgressView()
+                                        .scaleEffect(1.5)
+                                        .tint(.white)
+                                }
+                        }
                     }
                 } else {
                     ProgressView()
@@ -84,19 +124,27 @@ struct GoalSettingsView: View {
             }
         }
     }
-
+    
+    @MainActor
+    private func saveGoals(_ model: GoalSettingsViewModel) async {
+        do {
+            try await model.saveGoals()
+            dismiss()
+        } catch {
+            validationMessage = error.localizedDescription
+            showValidationError = true
+        }
+    }
+    
     private enum Constants {
         static let title = "Nutrition Goals"
-        static let calorieSection = "Calorie Goal"
-        static let proteinSection = "Protein Goals"
-        static let carbsSection = "Carbs Goals"
-        static let fatsSection = "Fats Goals"
-        static let calorieGoal = "Calories (kcal)"
-        static let proteinGoal = "Protein (g)"
-        static let carbsGoal = "Carbs (g)"
-        static let fatsGoal = "Fats (g)"
-        static let saveButton = "Save"
-        static let cancelButton = "Cancel"
-        static let doneButtonTitle = "Done"
+        static let inputSectionHeader = "Daily Goals"
+        static let saveButton = "Save Goals"
+        static let errorTitle = "Invalid Input"
+        static let errorButtonTitle = "OK"
     }
+}
+
+#Preview {
+    GoalSettingsView()
 }
