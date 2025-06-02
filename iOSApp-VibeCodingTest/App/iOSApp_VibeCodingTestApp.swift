@@ -30,8 +30,10 @@ struct iOSApp_VibeCodingTestApp: App {
         WindowGroup {
             if username.isEmpty {
                 LoginView()
+                .tint(.primary)
             } else {
                 MainTabView()
+                .tint(.primary)
             }
         }
         .modelContainer(sharedModelContainer)
