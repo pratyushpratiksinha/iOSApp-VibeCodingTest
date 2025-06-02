@@ -62,5 +62,17 @@ struct FoodCard: View {
             onTap?()
         }
     }
+}
 
+#Preview {
+    FoodCard(
+        food: FoodItem(
+            name: "Sample Food",
+            calories: 300,
+            protein: 20,
+            carbs: 30,
+            fats: 10,
+            timestamp: Date()
+        )
+    ) {}
 }
