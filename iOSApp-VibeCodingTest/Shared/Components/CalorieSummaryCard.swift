@@ -19,7 +19,7 @@ struct CalorieSummaryCard: View {
             VStack(alignment: .leading) {
                 Text(caloriesOver != nil ? "\(caloriesOver!)" : "\(caloriesLeft)")
                     .font(.system(size: Constants.valueFontSize, weight: .bold))
-                Text(caloriesOver != nil ? Constants.caloriesOver : Constants.caloriesLeft)
+                Text(caloriesOver != nil ? AppConstants.Nutrients.Titles.caloriesOver : AppConstants.Nutrients.Titles.caloriesLeft)
                     .font(.subheadline)
                     .foregroundColor(.secondary)
             }
@@ -28,8 +28,8 @@ struct CalorieSummaryCard: View {
 
             CircularProgressBar(
                 progress: calorieGoal == 0 ? 0 : Double(caloriesConsumed) / Double(calorieGoal),
-                image: Constants.icon,
-                color: Constants.progressColor,
+                image: AppConstants.Nutrients.Icons.calories,
+                color: AppConstants.Nutrients.Colors.calories,
                 lineWidth: Constants.progressLineWidth
             )
             .frame(width: Constants.progressSize, height: Constants.progressSize)
@@ -41,10 +41,6 @@ struct CalorieSummaryCard: View {
     }
 
     private enum Constants {
-        static let caloriesLeft = "Calories left"
-        static let caloriesOver = "Calories over"
-        static let icon = "flame"
-        static let progressColor = Color.accentColor
         static let progressLineWidth: CGFloat = 8
         static let progressSize: CGFloat = 64
         static let valueFontSize: CGFloat = 36

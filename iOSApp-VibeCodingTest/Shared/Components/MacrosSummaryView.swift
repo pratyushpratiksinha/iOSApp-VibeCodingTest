@@ -17,15 +17,36 @@ struct MacrosSummaryView: View {
 
     var body: some View {
         HStack(spacing: Constants.hStackSpacing) {
-            macroCard(title: Constants.proteinTitle, consumed: proteinConsumed, goal: proteinGoal, icon: Constants.proteinIcon, color: Constants.proteinColor)
-            macroCard(title: Constants.carbsTitle, consumed: carbsConsumed, goal: carbsGoal, icon: Constants.carbsIcon, color: Constants.carbsColor)
-            macroCard(title: Constants.fatsTitle, consumed: fatsConsumed, goal: fatsGoal, icon: Constants.fatsIcon, color: Constants.fatsColor)
+            macroCard(
+                title: AppConstants.Nutrients.Titles.protein,
+                consumed: proteinConsumed,
+                goal: proteinGoal,
+                icon: AppConstants.Nutrients.Icons.protein,
+                color: AppConstants.Nutrients.Colors.protein
+            )
+            macroCard(
+                title: AppConstants.Nutrients.Titles.carbs,
+                consumed: carbsConsumed,
+                goal: carbsGoal,
+                icon: AppConstants.Nutrients.Icons.carbs,
+                color: AppConstants.Nutrients.Colors.carbs
+            )
+            macroCard(
+                title: AppConstants.Nutrients.Titles.fats,
+                consumed: fatsConsumed,
+                goal: fatsGoal,
+                icon: AppConstants.Nutrients.Icons.fats,
+                color: AppConstants.Nutrients.Colors.fats
+            )
         }
     }
 
     private func macroCard(title: String, consumed: Int, goal: Int, icon: String, color: Color) -> some View {
         let left = goal - consumed
         let over = left < 0 ? abs(left) : nil
+        let unit = title == AppConstants.Nutrients.Titles.calories ? 
+            AppConstants.Nutrients.Units.calories : 
+            AppConstants.Nutrients.Units.protein
 
         return VStack(spacing: Constants.vStackSpacing) {
             CircularProgressBar(
@@ -36,10 +57,10 @@ struct MacrosSummaryView: View {
             )
             .frame(width: Constants.progressSize, height: Constants.progressSize)
 
-            Text(over != nil ? "\(over!)g" : "\(left)g")
+            Text(over != nil ? "\(over!)\(unit)" : "\(left)\(unit)")
                 .font(.headline)
 
-            Text(over != nil ? "\(title) \(Constants.overSuffix)" : "\(title) \(Constants.leftSuffix)")
+            Text(over != nil ? "\(title) \(AppConstants.Nutrients.Titles.overSuffix)" : "\(title) \(AppConstants.Nutrients.Titles.leftSuffix)")
                 .font(.caption2)
                 .foregroundColor(.secondary)
         }
@@ -51,21 +72,6 @@ struct MacrosSummaryView: View {
     }
 
     private enum Constants {
-        static let proteinTitle = "Protein"
-        static let carbsTitle = "Carbs"
-        static let fatsTitle = "Fats"
-
-        static let proteinIcon = "fork.knife"
-        static let carbsIcon = "leaf"
-        static let fatsIcon = "drop"
-
-        static let proteinColor = Color.red
-        static let carbsColor = Color.orange
-        static let fatsColor = Color.purple
-
-        static let overSuffix = "over"
-        static let leftSuffix = "left"
-
         static let progressLineWidth: CGFloat = 4
         static let progressSize: CGFloat = 32
         static let cardPadding: CGFloat = 12

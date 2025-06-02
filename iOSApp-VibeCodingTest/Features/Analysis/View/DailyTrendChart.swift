@@ -19,7 +19,7 @@ struct DailyTrendChart: View {
                 x: .value(Constants.xAxisLabel, date, unit: .day),
                 y: .value(Constants.yAxisLabel, value)
             )
-            .foregroundStyle(Constants.barColor)
+            .foregroundStyle(AppConstants.Nutrients.Colors.calories)
         }
         .chartXAxis {
             AxisMarks(values: .stride(by: .day)) { _ in
@@ -31,6 +31,5 @@ struct DailyTrendChart: View {
     private enum Constants {
         static let xAxisLabel = "Date"
         static let yAxisLabel = "Calories"
-        static let barColor: Color = .blue
     }
 }

@@ -63,10 +63,4 @@ struct FoodCard: View {
         }
     }
 
-    private enum Constants {
-        static let flameIcon = "flame"
-        static let proteinIcon = "fork.knife"
-        static let carbsIcon = "leaf"
-        static let fatsIcon = "drop"
-    }
 }

@@ -13,9 +13,21 @@ struct MacroBarChart: View {
 
     var body: some View {
         let entries = [
-            MacroEntry(name: Constants.proteinLabel, value: data.protein, color: Constants.proteinColor),
-            MacroEntry(name: Constants.carbsLabel, value: data.carbs, color: Constants.carbsColor),
-            MacroEntry(name: Constants.fatsLabel, value: data.fats, color: Constants.fatsColor),
+            MacroEntry(
+                name: AppConstants.Nutrients.Titles.protein,
+                value: data.protein,
+                color: AppConstants.Nutrients.Colors.protein
+            ),
+            MacroEntry(
+                name: AppConstants.Nutrients.Titles.carbs,
+                value: data.carbs,
+                color: AppConstants.Nutrients.Colors.carbs
+            ),
+            MacroEntry(
+                name: AppConstants.Nutrients.Titles.fats,
+                value: data.fats,
+                color: AppConstants.Nutrients.Colors.fats
+            )
         ]
 
         Chart(entries) { entry in
@@ -28,13 +40,7 @@ struct MacroBarChart: View {
     }
 
     private enum Constants {
-        static let proteinLabel = "Protein"
-        static let carbsLabel = "Carbs"
-        static let fatsLabel = "Fats"
         static let xAxisLabel = "Macro"
-        static let yAxisLabel = "Amount"
-        static let proteinColor: Color = .green
-        static let carbsColor: Color = .orange
-        static let fatsColor: Color = .purple
+        static let yAxisLabel = "Amount (g)"
     }
 }

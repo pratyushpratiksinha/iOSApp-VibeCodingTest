@@ -33,10 +33,26 @@ struct FoodEditView: View {
                 }
 
                 Section(header: Text(Constants.nutritionSection)) {
-                    Stepper("\(Constants.calories): \(food.calories)", value: $food.calories, in: 0 ... 5000)
-                    Stepper("\(Constants.protein): \(food.protein)", value: $food.protein, in: 0 ... 500)
-                    Stepper("\(Constants.carbs): \(food.carbs)", value: $food.carbs, in: 0 ... 500)
-                    Stepper("\(Constants.fats): \(food.fats)", value: $food.fats, in: 0 ... 200)
+                    Stepper(
+                        "\(AppConstants.Nutrients.Titles.calories): \(food.calories) \(AppConstants.Nutrients.Units.calories)",
+                        value: $food.calories,
+                        in: 0...AppConstants.Nutrients.MaxValue.Calories
+                    )
+                    Stepper(
+                        "\(AppConstants.Nutrients.Titles.protein): \(food.protein)\(AppConstants.Nutrients.Units.protein)",
+                        value: $food.protein,
+                        in: 0...AppConstants.Nutrients.MaxValue.Protein
+                    )
+                    Stepper(
+                        "\(AppConstants.Nutrients.Titles.carbs): \(food.carbs)\(AppConstants.Nutrients.Units.carbs)",
+                        value: $food.carbs,
+                        in: 0...AppConstants.Nutrients.MaxValue.Carbs
+                    )
+                    Stepper(
+                        "\(AppConstants.Nutrients.Titles.fats): \(food.fats)\(AppConstants.Nutrients.Units.fats)",
+                        value: $food.fats,
+                        in: 0...AppConstants.Nutrients.MaxValue.Fats
+                    )
                 }
             }
             .navigationTitle(Constants.navTitle)
@@ -64,7 +80,10 @@ struct FoodEditView: View {
 
     private var isValid: Bool {
         !food.name.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty &&
-            food.calories >= 0 && food.protein >= 0 && food.carbs >= 0 && food.fats >= 0
+            food.calories >= AppConstants.Nutrients.MinValue.Calories &&
+            food.protein >= AppConstants.Nutrients.MinValue.Macro &&
+            food.carbs >= AppConstants.Nutrients.MinValue.Macro &&
+            food.fats >= AppConstants.Nutrients.MinValue.Macro
     }
 
     private enum Constants {
@@ -72,10 +91,6 @@ struct FoodEditView: View {
         static let nameSection = "Name"
         static let namePlaceholder = "Food name"
         static let nutritionSection = "Nutrition"
-        static let calories = "Calories"
-        static let protein = "Protein"
-        static let carbs = "Carbs"
-        static let fats = "Fats"
         static let saveButton = "Save"
         static let cancelButton = "Cancel"
         static let doneButtonTitle = "Done"
