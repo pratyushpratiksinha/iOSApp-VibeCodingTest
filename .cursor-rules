@@ -63,6 +63,10 @@
           "CameraServiceError.swift"
         ]
       },
+      "History": [
+        "HistoryView.swift",
+        "HistoryViewModel.swift"
+      ],
       "Analysis": {
         "Model": [
           "MacroEntry.swift"
