@@ -124,7 +124,3 @@ struct HomeView: View {
         static let fabPadding: CGFloat = 24
     }
 }
-
-#Preview {
-    HomeView()
-}
