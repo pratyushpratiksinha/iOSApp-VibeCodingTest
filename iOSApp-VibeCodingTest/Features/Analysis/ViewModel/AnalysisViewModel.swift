@@ -30,22 +30,26 @@ final class AnalysisViewModel {
         }
     }
     
-    var visibleSectionCount = 10
-    var selectedRange: TimeRange = .oneDay
+    var selectedRangeForCalorieTrend: TimeRange = .oneDay
+    var selectedRangeForMacroDistribution: TimeRange = .oneDay
 
     func filteredItems(_ items: [FoodItem], for range: TimeRange) -> [FoodItem] {
-        let cutoffDate = Calendar.current.date(byAdding: .day, value: -range.days, to: Date()) ?? Date()
-        return items.filter { $0.timestamp >= cutoffDate }
-    }
-    
-    func groupedItems(_ items: [FoodItem]) -> [(key: String, value: [FoodItem])] {
-        let grouped = Dictionary(grouping: items) {
-            DateFormatter.day.string(from: $0.timestamp)
+        switch range {
+        case .oneDay:
+            let calendar = Calendar.current
+            let startOfToday = calendar.startOfDay(for: Date())
+            let startOfTomorrow = calendar.date(byAdding: .day, value: 1, to: startOfToday)!
+            return items.filter {
+                $0.timestamp >= startOfToday && $0.timestamp < startOfTomorrow
+            }
+
+        default:
+            let cutoffDate = Calendar.current.date(byAdding: .day, value: -range.days, to: Date()) ?? Date()
+            return items.filter { $0.timestamp >= cutoffDate }
         }
-        return grouped.sorted { $0.key > $1.key }
     }
 
-    func dailyCalories(for items: [FoodItem]) -> [Date: Int] {
+    func caloriesDistribution(for items: [FoodItem]) -> [Date: Int] {
         Dictionary(grouping: items, by: { $0.timestamp.onlyDate })
             .mapValues { $0.reduce(0) { $0 + $1.calories } }
     }
@@ -56,22 +60,19 @@ final class AnalysisViewModel {
         }
         return total
     }
+    
+    func stackedMacroDistribution(for items: [FoodItem]) -> [Date: (protein: Int, carbs: Int, fats: Int)] {
+        let grouped = Dictionary(grouping: items, by: { $0.timestamp.onlyDate })
 
-    func summary(for items: [FoodItem], userSettings: UserSettings?) -> (consumed: (calories: Int, protein: Int, carbs: Int, fats: Int), goal: (calories: Int, protein: Int, carbs: Int, fats: Int)) {
-        let consumed = (
-            calories: items.reduce(0) { $0 + $1.calories },
-            protein: items.reduce(0) { $0 + $1.protein },
-            carbs: items.reduce(0) { $0 + $1.carbs },
-            fats: items.reduce(0) { $0 + $1.fats }
-        )
-
-        let goal = (
-            calories: userSettings?.calorieGoal ?? 2000,
-            protein: userSettings?.proteinGoal ?? 100,
-            carbs: userSettings?.carbsGoal ?? 250,
-            fats: userSettings?.fatsGoal ?? 70
-        )
-
-        return (consumed: consumed, goal: goal)
+        return grouped.mapValues { group in
+            let total = group.reduce((protein: 0, carbs: 0, fats: 0)) { acc, item in
+                (
+                    acc.protein + item.protein,
+                    acc.carbs + item.carbs,
+                    acc.fats + item.fats
+                )
+            }
+            return total
+        }
     }
 }
