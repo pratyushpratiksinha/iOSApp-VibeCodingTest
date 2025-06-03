@@ -14,4 +14,18 @@ extension DateFormatter {
         df.timeStyle = .none
         return df
     }()
+    
+    static let shortWeekday: DateFormatter = {
+        let formatter = DateFormatter()
+        formatter.locale = .current
+        formatter.dateFormat = "EE"
+        return formatter
+    }()
+
+    static let dayOfMonth: DateFormatter = {
+        let formatter = DateFormatter()
+        formatter.locale = .current
+        formatter.dateFormat = "d"
+        return formatter
+    }()
 }
