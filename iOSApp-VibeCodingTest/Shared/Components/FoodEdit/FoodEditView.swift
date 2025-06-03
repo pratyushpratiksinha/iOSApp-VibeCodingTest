@@ -37,6 +37,13 @@ struct FoodEditView: View {
                 saveSection
             }
             .navigationTitle(viewModel.isEditing ? Constants.editTitle : Constants.addTitle)
+            .toolbar {
+                ToolbarItem(placement: .cancellationAction) {
+                    Button(Constants.cancelButton) {
+                        dismiss()
+                    }
+                }
+            }
             .navigationBarTitleDisplayMode(.inline)
             .alert(Constants.validationAlertTitle, isPresented: $viewModel.showValidationAlert) {
                 Button(Constants.okButton, role: .cancel) { }
