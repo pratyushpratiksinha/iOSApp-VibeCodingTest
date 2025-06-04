@@ -2,9 +2,14 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-	<key>OPENROUTER_API_KEY</key>
-	<string>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</string>
 	<key>API_BASE_URL</key>
 	<string>https://openrouter.ai/api/v1/chat/completions</string>
+	<key>OPENROUTER_API_KEY</key>
+	<string>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</string>
+	<key>UILaunchScreen</key>
+	<dict>
+        <key>UIImageName</key>
+        <string>LaunchImage</string>
+	</dict>
 </dict>
 </plist>
