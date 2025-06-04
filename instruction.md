@@ -41,12 +41,16 @@ iOSApp-VibeCodingTest/
 │   │   └── Service/
 │   │       └── CameraService.swift             # Async service calling OpenAI Vision API
 │
+│   ├── History/
+│   │   ├── HistoryView.swift                   # UI for Full history
+│   │   └── HistoryViewModel.swift              # Handles history state and logic
+│
 │   ├── Analysis/
 │   │   ├── Model/
 │   │   │   └── MacroEntry.swift                # Simple model for macro chart entries
 │   │   ├── View/
-│   │   │   ├── AnalysisView.swift              # Full history and trend analysis
-│   │   │   ├── DailyTrendChart.swift           # Chart of calories per day
+│   │   │   ├── AnalysisView.swift              # Trend analysis
+│   │   │   ├── CalorieTrendChart.swift         # Chart of calories
 │   │   │   └── MacroBarChart.swift             # Visual distribution of macros
 │   │   └── ViewModel/
 │   │       └── AnalysisViewModel.swift         # Groups items and computes chart data
@@ -58,18 +62,23 @@ iOSApp-VibeCodingTest/
 │
 ├── Shared/
 │   ├── Components/
+│   │   ├── FoodEdit/                           
+│   │   │   ├── FoodEditView.swift              # Editing UI for saved entries
+│   │   │   └── FoodEditViewModel.swift         # Food Edit states and logic
 │   │   ├── CalorieSummaryCard.swift            # Widget showing calories progress
 │   │   ├── CircularProgressBar.swift           # Ring progress used in macro views
+│   │   ├── CustomTextFieldStyle.swift          # TextField custom style
 │   │   ├── FloatingActionButton.swift          # FAB for launching camera
 │   │   ├── FoodCard.swift                      # Compact display of a food item
-│   │   ├── FoodEditView.swift                  # Editing UI for saved entries
 │   │   ├── MacroCard.swift                     # Individual macro card
 │   │   └── MacrosSummaryView.swift             # Groups all macro cards
 │   ├── Constants/
+│   │   ├── AppConstants.swift                  # App global constants
 │   │   └── AppStorageKeys.swift                # Keys for persistent settings storage
 │   └── Extensions/
 │       ├── Binding+Extension.swift             # Utility for optional or onChange binding
 │       ├── Date+Extension.swift                # Helpers like isToday, startOfDay, etc.
+│       ├── String+Extension.swift              # Helpers like toDictionary, jsonPayloadAfterPrefix, etc.
 │       ├── DateFormatter+Extension.swift       # Reusable static formatters
 │       └── UIImage+Extension.swift             # Image compression and processing
 │
@@ -99,8 +108,20 @@ iOSApp-VibeCodingTest/
 - Compress images before sending to API
 - Support real-device only (not supported on Simulator)
 
+### 🗓️ History Module
+- Display a chronological list of all logged meals
+- Group entries by date with headers.
+-	Show individual food cards (FoodCard) with details like:
+- Food name, portion
+- Calories and macro breakdown
+-	Include summary views per day:
+- CalorieSummaryCard for daily calorie progress
+- MacrosSummaryView for protein, carbs, and fats tracking
+-	Implements lazy loading (pagination) to show 10 days at a time
+-	Powered by SwiftData for local persistence
+
 ### 📊 Analysis Module
-- Send images to **OpenAI Vision API** (`gpt-4-vision-preview`)
+- Send images to **OpenAI GPT-4o API via OpenRouter** (`gpt-4o-preview`)
 - Parse JSON response into `VisionAPIResponse`
 - Provide editable fields (calories, macros)
 - Allow saving analyzed data to SwiftData
@@ -124,7 +145,7 @@ iOSApp-VibeCodingTest/
 - `AVFoundation` (camera)
 - `SwiftData` (local persistence)
 - `Charts` (visual analytics)
-- `OpenAI` GPT-4 Vision API
+- `OpenAI` GPT-4o API via OpenRouter
 - `Cursor.dev` (AI-based development environment)
 - `SweetPad` (for running app on iOS device from Cursor)
 
