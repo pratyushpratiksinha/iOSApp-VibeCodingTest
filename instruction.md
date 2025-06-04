@@ -35,9 +35,9 @@ iOSApp-VibeCodingTest/
 │   │   │   ├── CameraCaptureView.swift         # AVFoundation live camera preview
 │   │   │   ├── CameraProcessingView.swift      # Post-capture image editing UI
 │   │   │   └── CameraView.swift                # Manages camera lifecycle and flow
-│   │   └── ViewModel/
-│   │       ├── CameraProcessingViewModel.swift# Handles editable values after analysis
-│   │       └── CameraViewModel.swift           # Tracks camera + vision states
+│   │   ├── ViewModel/
+│   │   │   ├── CameraProcessingViewModel.swift# Handles editable values after analysis
+│   │   │   └── CameraViewModel.swift           # Tracks camera + vision states
 │   │   └── Service/
 │   │       └── CameraService.swift             # Async service calling OpenAI Vision API
 │
