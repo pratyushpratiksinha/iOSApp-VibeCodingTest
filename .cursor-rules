@@ -88,15 +88,19 @@
     ],
     "Shared": {
       "Components": [
+        "FoodEdit": [
+          "FoodEditView.swift",
+          "FoodEditViewModel.swift"
+        ],
         "CalorieSummaryCard.swift",
         "CircularProgressBar.swift",
         "FloatingActionButton.swift",
         "FoodCard.swift",
-        "FoodEditView.swift",
         "MacroCard.swift",
         "MacrosSummaryView.swift"
       ],
       "Constants": [
+        "AppConstants.swift",
         "AppStorageKeys.swift"
       ],
       "Extensions": [
