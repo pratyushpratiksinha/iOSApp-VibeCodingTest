@@ -16,7 +16,8 @@ A sophisticated iOS application that leverages advanced image recognition and nu
 ### Home Screen
 <img src="https://github.com/user-attachments/assets/b6ae69be-7c05-4da8-8c91-55ffa8371ea9" width="300"/>
 <img src="https://github.com/user-attachments/assets/05b1c8ca-813f-40b6-b093-8ee93a1526da" width="300"/>
-<img src="https://github.com/user-attachments/assets/f2ce25ff-074c-4bf5-b267-6b30e3e53ff1" width="300"/>
+<img src="https://github.com/user-attachments/assets/9ada195b-0fc4-411e-ac56-e82d4fe79902" width="300"/>
+
 
 ### Camera Screen
 <img src="https://github.com/user-attachments/assets/cd3ef300-c6b8-4170-bb45-4c8d0eed511b" width="300"/>
