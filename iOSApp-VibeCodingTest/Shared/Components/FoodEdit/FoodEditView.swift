@@ -26,13 +26,25 @@ struct FoodEditView: View {
             Form {
                 nameSection
                 nutritionSection
-                saveSection
             }
             .navigationTitle(viewModel.isEditing ? Constants.editTitle : Constants.addTitle)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
                     Button(Constants.cancelButton) {
                         dismiss()
+                    }
+                }
+                
+                ToolbarItem(placement: .primaryAction) {
+                    Button(Constants.saveButton) {
+                        Task { @MainActor in
+                            do {
+                                try await viewModel.saveFood()
+                                dismiss()
+                            } catch {
+                                viewModel.showValidationAlert = true
+                            }
+                        }
                     }
                 }
             }
@@ -125,39 +137,7 @@ struct FoodEditView: View {
             }
         }
     }
-    
-    private var saveSection: some View {
-        Section {
-            Button {
-                Task { @MainActor in
-                    do {
-                        try await viewModel.saveFood()
-                        dismiss()
-                    } catch {
-                        viewModel.showValidationAlert = true
-                    }
-                }
-            } label: {
-                HStack {
-                    if viewModel.isLoading {
-                        ProgressView()
-                            .tint(.white)
-                            .padding(.trailing, 8)
-                    }
-                    Text(Constants.saveButton)
-                }
-                .frame(maxWidth: .infinity)
-                .frame(height: AppConstants.UI.buttonHeight)
-                .clipShape(Rectangle())
-            }
-            .buttonStyle(.borderedProminent)
-            .padding(.horizontal, AppConstants.UI.horizontalPadding)
-            .padding(.top, AppConstants.UI.buttonTopPadding)
-        }
-        .listRowInsets(EdgeInsets())
-        .listRowBackground(Color.clear)
-    }
-    
+        
     private var loadingOverlay: some View {
         Group {
             if viewModel.isLoading {

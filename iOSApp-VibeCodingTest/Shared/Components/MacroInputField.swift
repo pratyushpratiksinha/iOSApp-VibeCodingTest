@@ -85,16 +85,6 @@ struct MacroInputField: View {
                 .keyboardType(.numberPad)
                 .textFieldStyle(.plain)
                 .focused($focusedField, equals: field)
-                .submitLabel(.next)
-                .onSubmit {
-                    switch field {
-                    case .calories: focusedField = .protein
-                    case .protein: focusedField = .carbs
-                    case .carbs: focusedField = .fats
-                    case .fats: focusedField = nil
-                    default: break
-                    }
-                }
             
             Text(unit)
                 .foregroundColor(.secondary)
