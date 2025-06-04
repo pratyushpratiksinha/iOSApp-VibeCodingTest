@@ -28,12 +28,13 @@ struct LoginView: View {
                 Spacer(minLength: Constants.spacerMinLength)
 
                 VStack(spacing: Constants.titleSpacing) {
-                    Image(systemName: "person.circle.fill")
+                    Image("vibe")
                         .resizable()
                         .aspectRatio(contentMode: .fit)
                         .frame(width: Constants.logoSize, height: Constants.logoSize)
                         .foregroundColor(.primary)
                         .symbolEffect(.bounce, options: .repeating, value: isVisible)
+                        .clipShape(Circle())
                     
                     Text(Constants.title)
                         .font(.system(size: Constants.titleSize, weight: .bold, design: .rounded))
