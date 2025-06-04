@@ -148,9 +148,9 @@ struct FoodEditView: View {
                 }
                 .frame(maxWidth: .infinity)
                 .frame(height: AppConstants.UI.buttonHeight)
+                .clipShape(Rectangle())
             }
             .buttonStyle(.borderedProminent)
-            .disabled(!viewModel.isValid || viewModel.isLoading)
             .padding(.horizontal, AppConstants.UI.horizontalPadding)
             .padding(.top, AppConstants.UI.buttonTopPadding)
         }
