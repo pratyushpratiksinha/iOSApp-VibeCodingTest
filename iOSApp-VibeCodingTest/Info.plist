@@ -8,8 +8,8 @@
 	<string>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</string>
 	<key>UILaunchScreen</key>
 	<dict>
-        <key>UIImageName</key>
-        <string>LaunchImage</string>
+		<key>UIImageName</key>
+		<string>LaunchImage</string>
 	</dict>
 </dict>
 </plist>
