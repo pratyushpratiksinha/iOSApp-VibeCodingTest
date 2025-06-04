@@ -23,12 +23,6 @@ final class GoalSettingsViewModel {
     var errorMessage: String?
     var showError = false
     
-    // Focus states
-    var isCaloriesFocused = false
-    var isProteinFocused = false
-    var isCarbsFocused = false
-    var isFatsFocused = false
-    
     // MARK: - Validation
     private var calorieValue: Int? { Int(calorieGoal) }
     private var proteinValue: Int? { Int(proteinGoal) }

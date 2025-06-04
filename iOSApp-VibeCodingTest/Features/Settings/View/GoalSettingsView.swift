@@ -15,6 +15,7 @@ struct GoalSettingsView: View {
     @State private var viewModel: GoalSettingsViewModel? = nil
     @State private var showValidationError = false
     @State private var validationMessage = ""
+    @FocusState private var focusedField: NutrientField?
     
     var body: some View {
         NavigationStack {
@@ -30,7 +31,9 @@ struct GoalSettingsView: View {
                                 icon: AppConstants.Nutrients.Icons.caloriesDefault,
                                 color: AppConstants.Nutrients.Colors.calories,
                                 unit: AppConstants.Nutrients.Units.calories,
-                                isFocused: model.isCaloriesFocused
+                                isFocused: focusedField == .calories,
+                                field: .calories,
+                                focusedField: $focusedField
                             )
                             
                             MacroInputField(
@@ -39,7 +42,9 @@ struct GoalSettingsView: View {
                                 icon: AppConstants.Nutrients.Icons.proteinDefault,
                                 color: AppConstants.Nutrients.Colors.protein,
                                 unit: AppConstants.Nutrients.Units.protein,
-                                isFocused: model.isProteinFocused
+                                isFocused: focusedField == .protein,
+                                field: .protein,
+                                focusedField: $focusedField
                             )
                             
                             MacroInputField(
@@ -48,7 +53,9 @@ struct GoalSettingsView: View {
                                 icon: AppConstants.Nutrients.Icons.carbsDefault,
                                 color: AppConstants.Nutrients.Colors.carbs,
                                 unit: AppConstants.Nutrients.Units.carbs,
-                                isFocused: model.isCarbsFocused
+                                isFocused: focusedField == .carbs,
+                                field: .carbs,
+                                focusedField: $focusedField
                             )
                             
                             MacroInputField(
@@ -57,7 +64,9 @@ struct GoalSettingsView: View {
                                 icon: AppConstants.Nutrients.Icons.fatsDefault,
                                 color: AppConstants.Nutrients.Colors.fats,
                                 unit: AppConstants.Nutrients.Units.fats,
-                                isFocused: model.isFatsFocused
+                                isFocused: focusedField == .fats,
+                                field: .fats,
+                                focusedField: $focusedField
                             )
                         } header: {
                             Text(Constants.inputSectionHeader)

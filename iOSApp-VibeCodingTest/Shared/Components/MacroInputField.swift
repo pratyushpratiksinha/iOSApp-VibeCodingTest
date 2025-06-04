@@ -7,6 +7,14 @@
 
 import SwiftUI
 
+enum NutrientField: Hashable {
+    case name
+    case calories
+    case protein
+    case carbs
+    case fats
+}
+
 struct MacroInputField: View {
     let title: String
     @Binding var value: String
@@ -14,7 +22,9 @@ struct MacroInputField: View {
     let color: Color
     let unit: String
     let isFocused: Bool
-    
+    let field: NutrientField
+    @FocusState.Binding var focusedField: NutrientField?
+
     private var iconName: String {
         if isFocused {
             switch icon {
@@ -74,6 +84,17 @@ struct MacroInputField: View {
             TextField(title, text: $value)
                 .keyboardType(.numberPad)
                 .textFieldStyle(.plain)
+                .focused($focusedField, equals: field)
+                .submitLabel(.next)
+                .onSubmit {
+                    switch field {
+                    case .calories: focusedField = .protein
+                    case .protein: focusedField = .carbs
+                    case .carbs: focusedField = .fats
+                    case .fats: focusedField = nil
+                    default: break
+                    }
+                }
             
             Text(unit)
                 .foregroundColor(.secondary)

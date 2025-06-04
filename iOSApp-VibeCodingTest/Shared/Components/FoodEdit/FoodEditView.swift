@@ -12,15 +12,7 @@ struct FoodEditView: View {
     @Environment(\.modelContext) private var modelContext
     @Environment(\.dismiss) private var dismiss
     @State private var viewModel: FoodEditViewModel
-    @FocusState private var focusedField: Field?
-    
-    enum Field: Hashable {
-        case name
-        case calories
-        case protein
-        case carbs
-        case fats
-    }
+    @FocusState private var focusedField: NutrientField?
     
     init(food: FoodItem, onSave: (() -> Void)?) {
         _viewModel = State(initialValue: FoodEditViewModel(
@@ -53,6 +45,9 @@ struct FoodEditView: View {
             .overlay { loadingOverlay }
             .interactiveDismissDisabled(viewModel.isLoading)
             .scrollDismissesKeyboard(.interactively)
+            .onTapGesture {
+                focusedField = nil
+            }
         }
     }
     
@@ -60,6 +55,7 @@ struct FoodEditView: View {
         Section {
             TextField(Constants.namePlaceholder, text: $viewModel.name)
                 .focused($focusedField, equals: .name)
+                .submitLabel(.next)
                 .onSubmit {
                     focusedField = .calories
                 }
@@ -82,9 +78,10 @@ struct FoodEditView: View {
                 icon: AppConstants.Nutrients.Icons.caloriesDefault,
                 color: AppConstants.Nutrients.Colors.calories,
                 unit: AppConstants.Nutrients.Units.calories,
-                isFocused: focusedField == .calories
+                isFocused: focusedField == .calories,
+                field: .calories,
+                focusedField: $focusedField
             )
-            .onTapGesture { focusedField = .calories }
             
             MacroInputField(
                 title: AppConstants.Nutrients.Titles.protein,
@@ -92,9 +89,10 @@ struct FoodEditView: View {
                 icon: AppConstants.Nutrients.Icons.proteinDefault,
                 color: AppConstants.Nutrients.Colors.protein,
                 unit: AppConstants.Nutrients.Units.protein,
-                isFocused: focusedField == .protein
+                isFocused: focusedField == .protein,
+                field: .protein,
+                focusedField: $focusedField
             )
-            .onTapGesture { focusedField = .protein }
             
             MacroInputField(
                 title: AppConstants.Nutrients.Titles.carbs,
@@ -102,9 +100,10 @@ struct FoodEditView: View {
                 icon: AppConstants.Nutrients.Icons.carbsDefault,
                 color: AppConstants.Nutrients.Colors.carbs,
                 unit: AppConstants.Nutrients.Units.carbs,
-                isFocused: focusedField == .carbs
+                isFocused: focusedField == .carbs,
+                field: .carbs,
+                focusedField: $focusedField
             )
-            .onTapGesture { focusedField = .carbs }
             
             MacroInputField(
                 title: AppConstants.Nutrients.Titles.fats,
@@ -112,9 +111,10 @@ struct FoodEditView: View {
                 icon: AppConstants.Nutrients.Icons.fatsDefault,
                 color: AppConstants.Nutrients.Colors.fats,
                 unit: AppConstants.Nutrients.Units.fats,
-                isFocused: focusedField == .fats
+                isFocused: focusedField == .fats,
+                field: .fats,
+                focusedField: $focusedField
             )
-            .onTapGesture { focusedField = .fats }
         } header: {
             Text(Constants.nutritionSection)
         } footer: {
